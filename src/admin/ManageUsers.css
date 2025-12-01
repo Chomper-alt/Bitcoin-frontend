@@ -1,0 +1,134 @@
+.manage-users {
+  padding: 20px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.user-card {
+  background: #1e1e2f;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.user-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #bbb;
+  margin-bottom: 8px;
+}
+
+.role-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.role-badge.admin {
+  background: #ff9800;
+  color: #fff;
+}
+
+.role-badge.user {
+  background: #2196f3;
+  color: #fff;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.badge.suspended {
+  background: #ffc107;
+  color: #000;
+}
+
+.badge.deactivated {
+  background: #9e9e9e;
+  color: #fff;
+}
+
+.card-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.role-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: #2a2a3d;
+  color: #fff;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary {
+  background: #607d8b;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #546e7a;
+}
+
+.btn-warning {
+  background: #ffc107;
+  color: #000;
+}
+
+.btn-warning:hover {
+  background: #e0a800;
+}
+
+.btn-danger {
+  background: #e53935;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #c62828;
+}
+
+.btn:disabled {
+  background: #555;
+  color: #aaa;
+  cursor: not-allowed;
+}

@@ -1,0 +1,126 @@
+.user-profile {
+  background: var(--card-bg);
+  color: var(--text-color);
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+  border: 1px solid var(--border-color);
+}
+
+.user-profile:hover {
+  transform: translateY(-4px);
+}
+
+.user-profile h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* PROFILE PICTURE */
+.profile-picture-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+/* Outer glow ring */
+.avatar-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  padding: 4px;
+
+  /* Accent gradient, theme-aware */
+  background: linear-gradient(
+    135deg,
+    var(--accent-start),
+    var(--accent-end)
+  );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-wrapper:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px var(--accent-glow);
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--border-strong);
+}
+
+/* FORM */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form label {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.profile-form input {
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--border-color);
+  padding: 0.8rem;
+  border-radius: 10px;
+  margin-top: 0.3rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-form input:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* VIP TAG */
+.simple-vip {
+  margin-top: 20px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--vip-bg);
+  color: var(--vip-text);
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+  .user-profile {
+    padding: 1.5rem;
+  }
+
+  .avatar-wrapper {
+    width: 130px;
+    height: 130px;
+  }
+
+  .profile-avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .simple-vip {
+    font-size: 1rem;
+  }
+}

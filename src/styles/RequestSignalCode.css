@@ -1,0 +1,140 @@
+/* ====== RequestSignalCode.css ====== */
+
+.signal-request-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+  background: radial-gradient(circle at top, #0b0f19, #090c14);
+  color: #fff;
+  padding: 2rem;
+}
+
+.signal-request-card {
+  background: linear-gradient(145deg, #101522, #0b0f19);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  max-width: 420px;
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.signal-request-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 40px rgba(0, 255, 255, 0.08);
+}
+
+.signal-request-card h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.signal-request-card p {
+  color: #b0b3c1;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.signal-request-card strong {
+  color: #00d9ff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #cdd1e0;
+  margin-bottom: 0.2rem;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(0, 217, 255, 0.3);
+}
+
+select option {
+  background: #0b0f19;
+  color: #fff;
+}
+
+button {
+  margin-top: 0.5rem;
+  padding: 0.9rem;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(90deg, #0096ff, #0052ff);
+  transform: scale(1.02);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signal-message {
+  margin-top: 1.2rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.signal-message.success {
+  background: rgba(0, 255, 128, 0.12);
+  color: #00ffb7;
+  border: 1px solid rgba(0, 255, 128, 0.25);
+}
+
+.signal-message.error {
+  background: rgba(255, 50, 50, 0.12);
+  color: #ff5c5c;
+  border: 1px solid rgba(255, 50, 50, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .signal-request-card {
+    padding: 1.5rem;
+  }
+  .signal-request-card h2 {
+    font-size: 1.4rem;
+  }
+}

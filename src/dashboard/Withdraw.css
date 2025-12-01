@@ -1,0 +1,92 @@
+.withdraw-page {
+  padding: 2rem;
+  color: #fff;
+  text-align: center;
+}
+
+.withdraw-container {
+  margin-top: 2rem;
+  background: linear-gradient(145deg, #1c1c1c, #2c2c2c);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.withdraw-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.withdraw-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  text-align: left;
+  color: #ddd;
+}
+
+.withdraw-form input,
+.withdraw-form select {
+  margin-top: 0.4rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.withdraw-form input:focus,
+.withdraw-form select:focus {
+  box-shadow: 0 0 8px #4cafef;
+}
+
+.caution {
+  font-size: 0.85rem;
+  color: #ffb347;
+  text-align: left;
+}
+
+.confirm-button {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, #4cafef, #0077ff);
+  color: #fff;
+  transition: transform 0.2s;
+}
+
+.confirm-button:hover {
+  transform: scale(1.05);
+}
+
+.confirmation-message {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.back-button {
+  display: inline-block;
+  margin-top: 2rem;
+  color: #4cafef;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s;
+}
+
+.back-button:hover {
+  color: #0077ff;
+}

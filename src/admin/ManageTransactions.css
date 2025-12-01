@@ -1,0 +1,96 @@
+.admin-transactions {
+  padding: 20px;
+  color: #fff;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #0ff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+.transaction-table {
+  overflow-x: auto;
+}
+
+.transaction-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #111;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.15);
+}
+
+.transaction-table th,
+.transaction-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #222;
+}
+
+.transaction-table th {
+  background: #0a0a0a;
+  color: #0ff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.transaction-table tr:hover {
+  background: rgba(0, 255, 255, 0.05);
+}
+
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.status-badge.pending {
+  background: #444;
+  color: #ffc107;
+}
+
+.status-badge.approved {
+  background: #0f0;
+  color: #000;
+}
+
+.status-badge.rejected {
+  background: #f00;
+  color: #fff;
+}
+
+.btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+}
+
+.btn-success {
+  background: #0f0;
+  color: #000;
+}
+
+.btn-success:hover {
+  background: #00cc00;
+}
+
+.btn-danger {
+  background: #f00;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #cc0000;
+}
+
+.loading-text {
+  color: #aaa;
+}

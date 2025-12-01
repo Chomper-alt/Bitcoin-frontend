@@ -1,0 +1,70 @@
+.sponsored-section {
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  text-align: center;
+  overflow: hidden;
+}
+
+.sponsored-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.logo-carousel {
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 3rem;
+  animation: scroll 25s linear infinite;
+  width: max-content;
+  align-items: center;
+}
+
+.logo-container {
+  min-width: 120px;
+  height: 60px;
+  background: #1f2937;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #111;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-container img {
+  max-width: 100px;
+  max-height: 40px;
+  object-fit: contain;
+  filter: brightness(0.8);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.logo-container:hover img {
+  filter: brightness(1);
+}
+
+/* Smooth infinite scroll */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause on hover */
+.logo-carousel:hover .carousel-track {
+  animation-play-state: paused;
+}

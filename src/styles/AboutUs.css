@@ -1,0 +1,164 @@
+.about-us {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(90deg, #1a1a1a, #111);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  overflow-x: hidden; /* prevent horizontal scrolling */
+}
+
+.about-hero {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.about-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.about-hero p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-section {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.about-section h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.about-section p,
+.about-section ul {
+  font-size: 1rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.about-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.about-section ul li {
+  margin: 10px 0;
+}
+
+/* OUR JOURNEY SECTION */
+.journey {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.journey h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-left: 20px;
+  border-left: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline-item::before {
+  content: "●";
+  position: absolute;
+  left: -12px;
+  color: #00ffcc;
+  font-size: 1.2rem;
+}
+
+.timeline-year {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #00ffcc;
+}
+
+.timeline-desc {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* CTA SECTION */
+.about-cta {
+  text-align: center;
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+}
+
+.about-cta h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.about-cta p {
+  font-size: 1.1rem;
+  margin-bottom: 25px;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #00ff99, #0099ff);
+  color: #fff;
+}
+
+.primary-btn:hover {
+  opacity: 0.9;
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

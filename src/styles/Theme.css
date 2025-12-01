@@ -1,0 +1,45 @@
+/* Light Theme (default) */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --card-bg: #f5f5f5;
+  --button-bg: #111111;
+  --button-text: #ffffff;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f5f5f5;
+  --card-bg: #1e1e1e;
+  --button-bg: #f5f5f5;
+  --button-text: #111111;
+}
+
+/* Apply variables */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+button {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+button:hover {
+  opacity: 0.9;
+}

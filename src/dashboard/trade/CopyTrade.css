@@ -1,0 +1,208 @@
+/* CopyTrade.css */
+
+.copy-trading {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #121212;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  color: #fff;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.copy-trading h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.wallet-balance {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+  color: #4ade80; /* green */
+}
+
+/* Profit Flash */
+.profit-flash {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  color: #fff;
+  font-weight: bold;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1rem;
+  animation: flash 1s ease-in-out;
+}
+
+@keyframes flash {
+  0% { opacity: 0; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Form */
+.trade-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.trade-form input {
+  padding: 0.8rem 1rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #1e1e1e;
+  color: #fff;
+}
+
+.trade-form input:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.trade-form button {
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.trade-form button:hover {
+  background: linear-gradient(90deg, #2563eb, #1d4ed8);
+  transform: scale(1.03);
+}
+
+.error {
+  color: #f87171; /* red */
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Active Trade Card */
+.active-trade {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid #333;
+  border-radius: 12px;
+  background: #1e1e1e;
+  position: relative;
+}
+
+.active-trade h3 {
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  color: #3b82f6;
+}
+
+.active-trade p {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+}
+
+/* Start New Trade Button */
+.start-new-trade {
+  margin-top: 15px;
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(90deg, #16a34a, #22c55e);
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.start-new-trade:hover {
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  transform: scale(1.05);
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 18px;
+  background: #2c2c3c;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar .progress {
+  height: 100%;
+  background: linear-gradient(90deg, #60a5fa, #06b6d4);
+  transition: width 1s ease-in-out;
+  border-radius: 10px;
+}
+
+/* Trades Table */
+.copy-trading table {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.copy-trading th, .copy-trading td {
+  padding: 0.8rem;
+  border: 1px solid #333;
+  text-align: center;
+}
+
+.copy-trading th {
+  background: #1f2937;
+  font-weight: 600;
+}
+
+.copy-trading tr:nth-child(even) {
+  background: #1e1e1e;
+}
+
+.copy-trading tr:hover {
+  background: #2d3748;
+}
+
+/* Highlight completed trades */
+.highlight-completed {
+  background: rgba(76, 175, 80, 0.15);
+  font-weight: bold;
+}
+
+/* Profit column */
+.profit {
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.signal-action {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.request-signal-btn {
+  background: linear-gradient(90deg, #00ffae, #00b3ff);
+  color: #000;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 150, 0.3);
+}
+
+.request-signal-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(0, 255, 150, 0.5);
+}
+

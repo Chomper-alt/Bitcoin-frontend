@@ -1,0 +1,106 @@
+.what-we-do-section {
+  padding: 6rem 6%;
+   background: linear-gradient(160deg, #0a0f1e, #020611);
+  color: white;
+}
+
+.what-we-do-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4rem;
+}
+
+.what-we-do-left {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.what-we-do-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  object-fit: contain;
+}
+
+.what-we-do-right {
+  flex: 1;
+  max-width: 600px;
+}
+
+.what-we-do-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1.2rem;
+}
+
+.what-we-do-subtitle {
+  font-size: 1.1rem;
+  color: #d1d5db;
+  margin-bottom: 1.5rem;
+}
+
+.what-we-do-description {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.what-we-do-list {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.what-we-do-list li {
+  margin-bottom: 0.6rem;
+}
+
+.what-we-do-button {
+  display: inline-block; /* makes it behave like a button */
+  text-decoration: none; /* removes underline */
+  background: linear-gradient(to right, #3b82f6, #06b6d4);
+  color: white;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.what-we-do-button:hover {
+  background: linear-gradient(to right, #2563eb, #0891b2);
+}
+
+/* Grid extension */
+.what-we-do-grid {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.what-card {
+  background: linear-gradient(160deg, #0f1629, #1b2238);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.what-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+}
+
+.what-icon {
+  color: #00d4ff;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1rem;
+}

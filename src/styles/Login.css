@@ -1,0 +1,115 @@
+.form-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  color: var(--text-color);
+  padding: 2rem;
+}
+
+.form-card {
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  padding: 2.5rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.form-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.form-card label {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.form-card input {
+  width: 100%;
+  padding: 0.85rem;
+  margin-top: 0.35rem;
+  border-radius: 10px;
+  border: none;
+  background: #ffffff;
+  color: #000;
+  font-size: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.form-card input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.5);
+}
+
+/* Password Wrapper */
+.password-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  flex: 1;
+  padding-right: 3.5rem;
+}
+
+/* Show / Hide Button */
+.password-input-wrapper button {
+  position: absolute;
+  right: 0.8rem;
+  background: #e5e5e5;
+  border: none;
+  color: #333;
+  padding: 0.35rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.password-input-wrapper button:hover {
+  background: #d4d4d4;
+}
+
+
+/* Submit Button */
+.submit-btn {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.25s ease;
+}
+
+.submit-btn:hover {
+  background: #22c55e;
+}
+
+/* Links */
+.form-card p {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.form-card p a {
+  color: #000;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.form-card p a:hover {
+  opacity: 0.8;
+}

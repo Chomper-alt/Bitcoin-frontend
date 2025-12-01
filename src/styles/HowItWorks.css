@@ -1,0 +1,90 @@
+/* src/styles/HowItWorks.css */
+.how-it-works {
+  padding: 4rem 2rem;
+  background: linear-gradient(160deg, #0a0f1e, #020611);
+  color: #fff;
+}
+
+.how-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+/* Left - Video */
+.how-video {
+  flex: 1;
+  background: #111;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.how-video video {
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Right - Text */
+.how-text {
+  flex: 1;
+}
+
+.how-text h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #00d4ff, #0077ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.how-text p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  color: #ddd;
+}
+
+.how-text ul {
+  margin: 1rem 0;
+  padding-left: 1.2rem;
+}
+
+.how-text ul li {
+  margin-bottom: 0.5rem;
+}
+
+.cta-btn {
+  display: inline-block; /* makes it behave like a button */
+  text-decoration: none; /* removes underline */
+  margin-top: 1rem;
+  padding: 0.8rem 1.5rem;
+  background: #00d4ff;
+  color: #111;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cta-btn:hover {
+  background: #00a3cc;
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .how-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .how-text {
+    margin-top: 2rem;
+  }
+}

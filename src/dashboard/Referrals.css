@@ -1,0 +1,71 @@
+.referrals-page {
+  background: var(--bg-color);
+  color: var(--text-color);
+  padding: 20px;
+}
+
+.referrals-page h2 {
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+/* LIST */
+.referrals-list {
+  display: grid;
+  gap: 15px;
+}
+
+/* CARD */
+.referral-card {
+  background: var(--card-bg);
+  color: var(--text-color);
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.referral-card h4 {
+  margin: 0 0 5px;
+  color: var(--text-color);
+}
+
+.referral-card span {
+  font-size: 0.85rem;
+  color: var(--muted-text);
+}
+
+/* REFERRAL LINK BOX */
+.referral-link-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.referral-link-box input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--border-color);
+}
+
+.referral-link-box input::placeholder {
+  color: var(--muted-text);
+}
+
+.referral-link-box button {
+  padding: 8px 16px;
+  background: var(--primary-color);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.referral-link-box button:hover {
+  background: var(--primary-hover);
+}

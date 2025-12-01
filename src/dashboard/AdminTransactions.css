@@ -1,0 +1,25 @@
+.admin-transactions {
+  padding: 20px;
+}
+
+.admin-transactions table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-transactions th,
+.admin-transactions td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.admin-transactions th {
+  background-color: #f0f0f0;
+}
+
+.admin-transactions button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}

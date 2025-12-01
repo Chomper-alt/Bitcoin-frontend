@@ -1,0 +1,66 @@
+.admin-page {
+  padding: 20px;
+  background: #111;
+}
+
+.admin-search {
+  margin-bottom: 15px;
+  padding: 8px;
+  width: 250px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.admin-table th {
+  background: #f4f4f4;
+}
+
+.btn-sm {
+  margin-right: 5px;
+  padding: 5px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-sm.danger {
+  background: #dc3545;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Go Back Button */
+.btn-go-back {
+  display: block;
+  width: 90%;
+  margin: 1rem auto;
+  padding: 0.5rem 1rem;
+  background-color: #ff6b6b; /* red-ish to indicate "exit" */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.btn-go-back:hover {
+  background-color: #ff4c4c;
+}

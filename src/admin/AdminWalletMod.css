@@ -1,0 +1,118 @@
+/* src/admin/AdminWalletMod.css */
+
+/* Main container */
+.admin-wallet-mod {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #1e1e2f;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Page title */
+.admin-wallet-mod h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #ffd700;
+}
+
+/* Message */
+.admin-wallet-mod .mod-message {
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  background-color: #28a74533; /* default success style */
+  color: #28a745;
+  border: 1px solid #28a745;
+}
+
+/* Message for errors (JSX can add inline style or class later) */
+.admin-wallet-mod .mod-message.error {
+  background-color: #dc354533;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+}
+
+/* Controls */
+.admin-wallet-mod .mod-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Label styling */
+.admin-wallet-mod label {
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 16px;
+}
+
+/* Input and select fields */
+.admin-wallet-mod input,
+.admin-wallet-mod select {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #2a2a3d;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.admin-wallet-mod input:focus,
+.admin-wallet-mod select:focus {
+  border-color: #ffd700;
+  box-shadow: 0 0 6px #ffd70033;
+}
+
+/* Buttons container */
+.admin-wallet-mod .mod-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Buttons */
+.admin-wallet-mod button {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+/* Add Deposit button */
+.admin-wallet-mod .btn-add {
+  background: #28a745;
+}
+
+.admin-wallet-mod .btn-add:hover {
+  background: #1e7e34;
+  transform: translateY(-1px);
+}
+
+/* Subtract / Withdraw button */
+.admin-wallet-mod .btn-subtract {
+  background: #dc3545;
+}
+
+.admin-wallet-mod .btn-subtract:hover {
+  background: #a71d2a;
+  transform: translateY(-1px);
+}
+
+.admin-wallet-mod button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
