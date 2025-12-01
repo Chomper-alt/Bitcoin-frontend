@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Support from "./pages/Support";
 import Review from "./pages/Review";
-import Terms from "./pages/terms";
+import Terms from "./pages/Terms";
 
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
