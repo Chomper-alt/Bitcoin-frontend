@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/api/users/settings";
+const API_URL = "http://api.metaxtrader.com/api/users/settings";
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();

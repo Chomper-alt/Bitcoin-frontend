@@ -1,35 +1,27 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./AdminSignalRequest.css";
 
 const AdminSignalRequests = () => {
   const [requests, setRequests] = useState([]);
-  const admin = JSON.parse(localStorage.getItem("userInfo"));
-  const token = admin?.token;
 
-const fetchRequests = async () => {
-  try {
-    const res = await axios.get("http://localhost:5000/api/signals/requests", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setRequests(res.data);
-  } catch (err) {
-    console.error("Error loading requests:", err);
-  }
-};
+  const fetchRequests = async () => {
+    try {
+      const res = await api.get("/api/signals/requests");
+      setRequests(res.data);
+    } catch (err) {
+      console.error("Error loading requests:", err);
+    }
+  };
 
-const updateStatus = async (id, status) => {
-  try {
-    await axios.put(
-      `http://localhost:5000/api/signals/requests/${id}`,
-      { status },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    fetchRequests();
-  } catch (err) {
-    console.error("Error updating status:", err);
-  }
-};
+  const updateStatus = async (id, status) => {
+    try {
+      await api.put(`/api/signals/requests/${id}`, { status });
+      fetchRequests();
+    } catch (err) {
+      console.error("Error updating status:", err);
+    }
+  };
 
   useEffect(() => {
     fetchRequests();
@@ -90,4 +82,5 @@ const updateStatus = async (id, status) => {
 };
 
 export default AdminSignalRequests;
+
 

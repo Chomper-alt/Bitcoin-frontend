@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const TestApi = () => {
  useEffect(() => {
-  fetch("http://localhost:5000")
+  fetch("http://api.metaxtrader.com")
     .then(res => res.text())
     .then(data => console.log(data))
     .catch(err => console.error("❌ API error:", err));

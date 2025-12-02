@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
           serverUser.profileImage &&
           !serverUser.profileImage.startsWith("http")
         ) {
-          serverUser.profileImage = `http://localhost:5000${serverUser.profileImage}`;
+          serverUser.profileImage = `http://api.metaxtrader.com${serverUser.profileImage}`;
         }
 
         setUser(serverUser);

@@ -21,7 +21,7 @@ export default function LiveTrade() {
   const token = localStorage.getItem("token");
 
   const api = axios.create({
-    baseURL: "http://localhost:5000/api/livetrading",
+    baseURL: "http://api.metaxtrader.com/api/livetrading",
     headers: { Authorization: token ? `Bearer ${token}` : "" },
   });
 

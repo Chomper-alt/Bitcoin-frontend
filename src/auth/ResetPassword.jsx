@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../utils/axiosInstance.js";
 import { toast } from "react-toastify";
 
-const API_URL = "http://localhost:5000/api/users/settings";
+const API_URL = "http://api.metaxtrader.com/api/users/settings";
 
 const ResetPassword = () => {
   const { token } = useParams(); // get token from URL

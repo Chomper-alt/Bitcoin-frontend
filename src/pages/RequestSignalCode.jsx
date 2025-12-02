@@ -1,6 +1,6 @@
 // src/pages/RequestSignalCode.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "../styles/RequestSignalCode.css";
 
 const RequestSignalCode = () => {
@@ -35,7 +35,7 @@ const RequestSignalCode = () => {
         return;
       }
       try {
-        const res = await axios.get("http://localhost:5000/api/users/me", {
+        const res = await api.get("http://api.metaxtrader.com/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         // res.data should include vipLevel or vipLevel string; normalize to number
@@ -88,8 +88,8 @@ const RequestSignalCode = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/signals/request",
+      const res = await api.post(
+        "http://api.metaxtrader.com/api/signals/request",
         { email, type },
         {
           headers: {
