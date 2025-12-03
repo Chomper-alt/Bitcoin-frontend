@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { motion } from "framer-motion";
 import "./VipDashboard.css";
 import { useUser } from "../contexts/UserContext";
+import api from "../utils/axiosInstance"; // ✅ USE CENTRALIZED API
 
 export default function VipDashboard() {
-  const { user } = useUser(); // 🔥 Use consistent VIP info
+  const { user } = useUser();
+
   const [history, setHistory] = useState([]);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔥 We use a single VIP mapping (same as UserContext)
   const vipNames = [
     "Beginner",
     "Amateur",
@@ -23,9 +23,9 @@ export default function VipDashboard() {
     "Eternal",
   ];
 
-  const currentVIP = user.vipTitle;           // "Professional"
-  const currentLevel = user.vipLevelNumber;   // 5
-  const badge = user.vipBadge;                // "Professional"
+  const currentVIP = user?.vipTitle || vipNames[0];
+  const currentLevel = user?.vipLevelNumber ?? 0;
+  const badge = user?.vipBadge || vipNames[0];
 
   const getLevelClass = (name) => {
     if (!name) return "";
@@ -37,19 +37,32 @@ export default function VipDashboard() {
   useEffect(() => {
     const fetchVipData = async () => {
       try {
-        const headers = {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        };
-
         const [historyRes, progressRes] = await Promise.all([
-          axios.get("/api/vip/history", { headers }),
-          axios.get("/api/vip/progress", { headers }),
+          api.get("/api/vip/history"),
+          api.get("/api/vip/progress"),
         ]);
 
-        setHistory(historyRes.data);
-        setProgress(progressRes.data);
+        // ✅ FORCE ARRAY SHAPE (PREVENTS map() CRASH)
+        const historyList =
+          historyRes.data?.history ||
+          historyRes.data?.data ||
+          historyRes.data ||
+          [];
+
+        setHistory(Array.isArray(historyList) ? historyList : []);
+
+        // ✅ SAFE PROGRESS OBJECT
+        const progressObj =
+          progressRes.data?.progress ||
+          progressRes.data?.data ||
+          progressRes.data ||
+          null;
+
+        setProgress(progressObj && typeof progressObj === "object" ? progressObj : null);
       } catch (err) {
-        console.error("Failed to fetch VIP data:", err);
+        console.error("❌ Failed to fetch VIP data:", err);
+        setHistory([]);
+        setProgress(null);
       } finally {
         setLoading(false);
       }
@@ -91,7 +104,7 @@ export default function VipDashboard() {
       </motion.div>
 
       {/* Progress Bar */}
-      {progress && (
+      {progress?.progress !== undefined && (
         <motion.div
           className="vip-progress"
           initial={{ opacity: 0 }}
@@ -119,7 +132,7 @@ export default function VipDashboard() {
       >
         <h3>VIP Points History</h3>
         <ul>
-          {history.length > 0 ? (
+          {Array.isArray(history) && history.length > 0 ? (
             history.map((h, idx) => (
               <motion.li
                 key={idx}
@@ -128,9 +141,13 @@ export default function VipDashboard() {
                 transition={{ delay: 0.8 + idx * 0.1 }}
               >
                 <span>
-                  {h.details || h.source} — {h.points} pts
+                  {h.details || h.source || "VIP Activity"} — {h.points || 0} pts
                 </span>
-                <span>{new Date(h.createdAt).toLocaleDateString("en-US")}</span>
+                <span>
+                  {h.createdAt
+                    ? new Date(h.createdAt).toLocaleDateString("en-US")
+                    : "—"}
+                </span>
               </motion.li>
             ))
           ) : (
