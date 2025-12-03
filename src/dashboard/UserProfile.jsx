@@ -1,6 +1,7 @@
 import React from "react";
 import "./UserProfile.css";
 import { useUser } from "../contexts/UserContext";
+import { normalizeImageUrl } from "../utils/normalizeImageUrl"; // ✅ IMPORTANT
 
 const vipNames = [
   "Beginner",
@@ -20,8 +21,10 @@ const UserProfile = () => {
   if (loading) return <div className="user-profile">Loading...</div>;
   if (!user) return <div className="user-profile">No user data found.</div>;
 
-  // ✅ Use vipLevelNumber to correctly map VIP name
   const vipName = vipNames[user.vipLevelNumber ?? 0];
+
+  const profileImage =
+    normalizeImageUrl(user.profileImage) || "/images/default-avatar.png";
 
   return (
     <div className="user-profile">
@@ -31,9 +34,12 @@ const UserProfile = () => {
       <div className="profile-picture-section">
         <div className="avatar-wrapper">
           <img
-            src={user.profileImage || "/default-avatar.png"}
+            src={profileImage}
             alt="Profile"
             className="profile-avatar"
+            onError={(e) => {
+              e.currentTarget.src = "/images/default-avatar.png";
+            }}
           />
         </div>
       </div>

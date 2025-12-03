@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/axiosInstance.js";
+import { normalizeImageUrl } from "../utils/normalizeImageUrl.js"; // ✅ IMPORTANT
 
 const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
@@ -20,7 +21,12 @@ export const UserProvider = ({ children }) => {
         return null;
       }
 
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+
+      // 🔥 Ensure avatar is valid even if bad data was saved earlier
+      parsed.profileImage = normalizeImageUrl(parsed.profileImage);
+
+      return parsed;
     } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("userInfo");
@@ -30,7 +36,6 @@ export const UserProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
 
-  // VIP name list mapped to numeric vipLevel
   const vipNames = [
     "Beginner",
     "Amateur",
@@ -52,9 +57,7 @@ export const UserProvider = ({ children }) => {
     }
 
     try {
-      const res = await api.get("/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get("/api/auth/me");
 
       const data = res.data;
 
@@ -68,6 +71,7 @@ export const UserProvider = ({ children }) => {
         vipTitle,
         vipBadge: vipTitle,
         isAdmin: data.role === "admin",
+        profileImage: normalizeImageUrl(data.profileImage), // 🔥 Fix avatar ALWAYS
       };
 
       setUserState(userData);
@@ -87,6 +91,7 @@ export const UserProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  // -------- UPDATE USER --------
   const setUser = (data) => {
     const vipLevelNumber = data.vipLevel ?? 0;
     const vipTitle = vipNames[vipLevelNumber] || "Beginner";
@@ -97,6 +102,7 @@ export const UserProvider = ({ children }) => {
       vipTitle,
       vipBadge: vipTitle,
       isAdmin: data.role === "admin",
+      profileImage: normalizeImageUrl(data.profileImage), // 🔥 Ensure safe URL
     };
 
     setUserState(userData);
@@ -104,29 +110,28 @@ export const UserProvider = ({ children }) => {
     if (userData.token) localStorage.setItem("token", userData.token);
   };
 
- const logout = async () => {
-  try {
-    const token = localStorage.getItem("token");
+  // -------- LOGOUT --------
+  const logout = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-    await api.post(
-      "/api/auth/logout",
-      {},
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-  } catch (err) {
-    console.warn("Logout request failed (probably expired token). Continuing...");
-  }
+      await api.post(
+        "/api/auth/logout",
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch {
+      console.warn("Logout failed (token probably expired). Continuing...");
+    }
 
-  // Clear local data ALWAYS
-  setUserState(null);
-  localStorage.removeItem("token");
-  localStorage.removeItem("userInfo");
+    setUserState(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
 
-  navigate("/login");
-};
-
+    navigate("/login");
+  };
 
   return (
     <UserContext.Provider value={{ user, setUser, loading, logout }}>
