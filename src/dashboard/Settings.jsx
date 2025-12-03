@@ -1,37 +1,46 @@
-import React, { useState, useEffect } from "react";
+// src/dashboard/Settings.jsx
+import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
-import { useAuth } from "../contexts/AuthContext";
+import { useUser } from "../contexts/UserContext";
 import "./Settings.css";
-import api from "../utils/axiosInstance";
 import { toast } from "react-toastify";
+import api from "../utils/axiosInstance"; // ✅ uses HTTPS baseURL + token interceptor
+
+// Normalize any profile image to an absolute HTTPS URL
+const normalizeImageUrl = (val) => {
+  if (!val) return null;
+  if (val.startsWith("http://")) return val.replace("http://", "https://");
+  if (val.startsWith("https://")) return val;
+  // backend serves uploads at /uploads/*
+  if (val.startsWith("/uploads")) return `https://api.metaxtrader.com${val}`;
+  return val;
+};
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, logout, fetchCurrentUser } = useAuth();
+  const { user, setUser, logout } = useUser();
+  const token = localStorage.getItem("token");
 
   // Local state
   const [profileFile, setProfileFile] = useState(null);
-  const [profilePreview, setProfilePreview] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(
+    normalizeImageUrl(user?.profileImage) || "/images/default-avatar.png" // ✅ served by frontend; no CORS
+  );
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const [phoneEmail, setPhoneEmail] = useState("");
+
   const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  // ✅ Keep preview synced with user
-  useEffect(() => {
-    if (user?.profileImage) {
-      setProfilePreview(user.profileImage);
-    }
-  }, [user]);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   // ---------------- PROFILE IMAGE ----------------
   const handleProfileImageChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
     setProfileFile(file);
     setProfilePreview(URL.createObjectURL(file));
@@ -44,18 +53,25 @@ const Settings = () => {
     formData.append("photo", profileFile);
 
     try {
-      const res = await api.put("/api/users/settings/profile-image", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const res = await api.patch("/api/users/settings/profile-image", formData, {
+        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` }, // extra safety
       });
+
+      const img =
+        normalizeImageUrl(res?.data?.imageUrl) ||
+        normalizeImageUrl(res?.data?.profileImage) ||
+        normalizeImageUrl(res?.data?.url);
+
+      if (img) {
+        setUser((prev) => ({ ...prev, profileImage: img }));
+        setProfilePreview(img);
+      }
 
       toast.success("Profile picture updated!");
       setProfileFile(null);
-
-      // ✅ Refresh canonical user after upload
-      await fetchCurrentUser();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to upload profile image");
+      toast.error(err?.response?.data?.message || "Failed to upload profile image");
     }
   };
 
@@ -66,17 +82,19 @@ const Settings = () => {
       return toast.error("New passwords do not match");
 
     try {
-      await api.patch("/api/users/settings/password", {
-        currentPassword,
-        newPassword,
-      });
+      await api.patch(
+        "/api/users/settings/password",
+        { currentPassword, newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       toast.success("Password updated!");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to update password");
+      console.error(err);
+      toast.error(err?.response?.data?.msg || err?.response?.data?.message || "Failed to update password");
     }
   };
 
@@ -85,14 +103,17 @@ const Settings = () => {
     e.preventDefault();
 
     try {
-      await api.post("/api/users/settings/phone-request", {
-        email: phoneEmail,
-      });
+      await api.post(
+        "/api/users/settings/phone-request",
+        { email: phoneEmail },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       toast.info("Verification email sent!");
       setPhoneEmail("");
-    } catch {
-      toast.error("Failed to request phone number change");
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Failed to request phone number change");
     }
   };
 
@@ -101,15 +122,13 @@ const Settings = () => {
     e.preventDefault();
 
     try {
-      await api.post("/api/users/settings/password-reset-request", {
-        email: resetEmail,
-      });
-
+      await api.post("/api/users/settings/password-reset-request", { email: resetEmail });
       toast.info("Password reset link sent!");
       setShowForgot(false);
       setResetEmail("");
-    } catch {
-      toast.error("Failed to send reset link");
+    } catch (err) {
+      console.error(err);
+      toast.error(err?.response?.data?.message || "Failed to send reset link");
     }
   };
 
@@ -118,12 +137,17 @@ const Settings = () => {
     const newTheme = e.target.value;
 
     try {
-      await api.patch("/api/users/settings/theme", { theme: newTheme });
+      await api.patch(
+        "/api/users/settings/theme",
+        { theme: newTheme },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       toggleTheme(newTheme);
       toast.success(`Theme updated to ${newTheme}`);
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update theme");
+      toast.error(err?.response?.data?.message || "Failed to update theme");
     }
   };
 
@@ -145,7 +169,11 @@ const Settings = () => {
           <img
             src={profilePreview || "/images/default-avatar.png"}
             alt="Preview"
+            onError={(e) => {
+              e.currentTarget.src = "/images/default-avatar.png"; // ✅ always safe, same-origin
+            }}
           />
+
           <input type="file" accept="image/*" onChange={handleProfileImageChange} />
         </div>
         <button onClick={uploadProfileImage}>Upload New Picture</button>
@@ -219,6 +247,7 @@ const Settings = () => {
       {/* THEME SWITCH */}
       <div className="settings-section">
         <h3>Theme</h3>
+
         <div className="theme-toggle">
           <label>Choose Theme:</label>
           <select value={theme} onChange={handleThemeChange}>
@@ -255,3 +284,4 @@ const Settings = () => {
 };
 
 export default Settings;
+
