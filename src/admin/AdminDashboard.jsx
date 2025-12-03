@@ -1,23 +1,29 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "./AdminDashboard.css";
+import api from "../utils/axiosInstance"; // ✅ centralized axios
 
 export default function Dashboard() {
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const token = localStorage.getItem("token"); // assumes you store admin JWT here
-        const { data } = await axios.get("/api/admin/stats", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setStats(data.stats);
+        const { data } = await api.get("/api/admin/stats");
+
+        // ✅ FORCE SAFE SHAPE
+        const statsObj =
+          data?.stats ||
+          data?.data ||
+          data ||
+          {};
+
+        setStats(typeof statsObj === "object" && statsObj !== null ? statsObj : {});
       } catch (err) {
         setError("Failed to fetch admin stats");
-        console.error(err);
+        console.error("Admin stats fetch error:", err);
+        setStats({}); // ✅ prevent undefined crashes
       } finally {
         setLoading(false);
       }
@@ -30,12 +36,12 @@ export default function Dashboard() {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   const displayStats = [
-    { title: "Total Users", value: stats.totalUsers, icon: "👥" },
-    { title: "Active Users", value: stats.activeUsers, icon: "✅" },
-    { title: "Total Transactions", value: stats.totalTransactions, icon: "💳" },
-    { title: "Pending Withdrawals", value: stats.pendingWithdrawals, icon: "⏳" },
-    { title: "Total Deposits", value: `$${stats.totalDeposits}`, icon: "💰" },
-    { title: "Revenue", value: `$${stats.revenue}`, icon: "📈" },
+    { title: "Total Users", value: stats?.totalUsers ?? 0, icon: "👥" },
+    { title: "Active Users", value: stats?.activeUsers ?? 0, icon: "✅" },
+    { title: "Total Transactions", value: stats?.totalTransactions ?? 0, icon: "💳" },
+    { title: "Pending Withdrawals", value: stats?.pendingWithdrawals ?? 0, icon: "⏳" },
+    { title: "Total Deposits", value: `$${stats?.totalDeposits ?? 0}`, icon: "💰" },
+    { title: "Revenue", value: `$${stats?.revenue ?? 0}`, icon: "📈" },
   ];
 
   return (
