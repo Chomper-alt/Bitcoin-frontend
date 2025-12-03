@@ -1,4 +1,3 @@
-// AuthContext.jsx
 import React, { createContext, useState, useEffect, useContext } from "react";
 import api from "../utils/axiosInstance.js";
 
@@ -9,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // --- Helper: Set axios Authorization header ---
+  // ✅ Set axios Authorization header
   const setAuthHeader = (tkn) => {
     if (tkn) {
       api.defaults.headers.common["Authorization"] = `Bearer ${tkn}`;
@@ -18,30 +17,32 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // --- Helper: Fetch current user from backend ---
+  // ✅ SAFELY normalize profile image URL (NO double prefix, NO http)
+  const normalizeProfileImage = (serverUser) => {
+    if (serverUser?.profileImage) {
+      if (serverUser.profileImage.startsWith("http")) {
+        return serverUser;
+      } else {
+        serverUser.profileImage = `https://api.metaxtrader.com${serverUser.profileImage}`;
+      }
+    }
+    return serverUser;
+  };
+
+  // ✅ Fetch canonical logged-in user from backend
   const fetchCurrentUser = async () => {
     try {
-      // ✅ FIXED: correct endpoint is /api/auth/me
       const res = await api.get("/api/auth/me");
-
-      // Some backends return { user: {...} }, others return direct object
-      const serverUser = res.data?.user ?? res.data;
+      let serverUser = res.data?.user ?? res.data;
 
       if (serverUser) {
-        // Normalize profile image URL
-        if (
-          serverUser.profileImage &&
-          !serverUser.profileImage.startsWith("http")
-        ) {
-          serverUser.profileImage = `http://api.metaxtrader.com${serverUser.profileImage}`;
-        }
-
+        serverUser = normalizeProfileImage(serverUser);
         setUser(serverUser);
-        localStorage.setItem("user", JSON.stringify(serverUser));
+        localStorage.setItem("userInfo", JSON.stringify(serverUser));
         return serverUser;
       } else {
         setUser(null);
-        localStorage.removeItem("user");
+        localStorage.removeItem("userInfo");
         return null;
       }
     } catch (err) {
@@ -51,56 +52,50 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // --- On mount: restore session ---
+  // ✅ Restore session on app load
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
+
     if (storedToken) {
       setToken(storedToken);
       setAuthHeader(storedToken);
-
-      // Fetch canonical user for sync
       fetchCurrentUser().finally(() => setLoading(false));
     } else {
-      // fallback restore user only if cached
-      const storedUser = localStorage.getItem("user");
+      const storedUser = localStorage.getItem("userInfo");
       if (storedUser) {
         try {
           setUser(JSON.parse(storedUser));
-        } catch {}
+        } catch {
+          localStorage.removeItem("userInfo");
+        }
       }
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --- Safe logout helper ---
+  // ✅ Safe logout
   const safeLogout = async () => {
     try {
       const localToken = localStorage.getItem("token");
       if (localToken) {
-        await api
-          .post("/api/auth/logout", null, {
-            headers: { Authorization: `Bearer ${localToken}` },
-          })
-          .catch(() => {});
+        await api.post("/api/auth/logout").catch(() => {});
       }
-    } catch (e) {
+    } catch (_) {
       // ignore
     } finally {
       setUser(null);
       setToken(null);
-      localStorage.removeItem("user");
+      localStorage.removeItem("userInfo");
       localStorage.removeItem("token");
       setAuthHeader(null);
     }
   };
 
-  // --- Public logout function ---
   const logout = async () => {
     await safeLogout();
   };
 
-  // --- LOGIN ---
+  // ✅ LOGIN
   const login = async (email, password) => {
     try {
       const res = await api.post("/api/auth/login", { email, password });
@@ -111,16 +106,13 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", tkn);
         setAuthHeader(tkn);
 
-        // Fetch canonical user after login
-        let serverUser = null;
-        try {
-          serverUser = await fetchCurrentUser();
-        } catch {}
-
+        let serverUser = await fetchCurrentUser().catch(() => null);
         const finalUser = serverUser || res.data?.user;
+
         if (finalUser) {
-          setUser(finalUser);
-          localStorage.setItem("user", JSON.stringify(finalUser));
+          const normalizedUser = normalizeProfileImage(finalUser);
+          setUser(normalizedUser);
+          localStorage.setItem("userInfo", JSON.stringify(normalizedUser));
         }
 
         return { success: true, data: res.data };
@@ -129,25 +121,31 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       console.error("Login error:", err?.response?.data ?? err.message);
-      const message = err?.response?.data?.message || "Login failed";
-      return { success: false, error: message };
+      return {
+        success: false,
+        error: err?.response?.data?.message || "Login failed",
+      };
     }
   };
 
-  // --- REGISTER ---
+  // ✅ REGISTER
   const register = async (formData) => {
     try {
       const res = await api.post("/api/auth/register", formData);
+
       if (res.data?.token) {
         const tkn = res.data.token;
         setToken(tkn);
         localStorage.setItem("token", tkn);
         setAuthHeader(tkn);
 
-        const serverUser = await fetchCurrentUser();
-        if (!serverUser && res.data?.user) {
-          setUser(res.data.user);
-          localStorage.setItem("user", JSON.stringify(res.data.user));
+        let serverUser = await fetchCurrentUser().catch(() => null);
+        const finalUser = serverUser || res.data?.user;
+
+        if (finalUser) {
+          const normalizedUser = normalizeProfileImage(finalUser);
+          setUser(normalizedUser);
+          localStorage.setItem("userInfo", JSON.stringify(normalizedUser));
         }
 
         return { success: true, data: res.data };
@@ -156,34 +154,43 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (err) {
       console.error("Register error:", err?.response?.data ?? err.message);
-      const message = err?.response?.data?.message || "Registration failed";
-      return { success: false, error: message };
+      return {
+        success: false,
+        error: err?.response?.data?.message || "Registration failed",
+      };
     }
   };
 
-  // --- FORGOT PASSWORD ---
+  // ✅ FORGOT PASSWORD
   const forgotPassword = async (email) => {
     try {
       const res = await api.post("/api/auth/forgot-password", { email });
       return { success: true, data: res.data };
     } catch (err) {
       console.error("Forgot password error:", err?.response?.data ?? err.message);
-      return { success: false, error: err?.response?.data?.message || "Request failed" };
+      return {
+        success: false,
+        error: err?.response?.data?.message || "Request failed",
+      };
     }
   };
 
-  // --- RESET PASSWORD ---
+  // ✅ RESET PASSWORD
   const resetPassword = async (tokenParam, password) => {
     try {
-      const res = await api.post(`/api/auth/reset-password/${tokenParam}`, { password });
+      const res = await api.post(`/api/auth/reset-password/${tokenParam}`, {
+        password,
+      });
       return { success: true, data: res.data };
     } catch (err) {
       console.error("Reset password error:", err?.response?.data ?? err.message);
-      return { success: false, error: err?.response?.data?.message || "Reset failed" };
+      return {
+        success: false,
+        error: err?.response?.data?.message || "Reset failed",
+      };
     }
   };
 
-  // --- Context Value ---
   return (
     <AuthContext.Provider
       value={{
