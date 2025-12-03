@@ -1,34 +1,33 @@
-// src/dashboard/Settings.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "../contexts/ThemeContext";
-import { useUser } from "../contexts/UserContext";
+import { useAuth } from "../contexts/AuthContext";
 import "./Settings.css";
-import axios from "axios";
+import api from "../utils/axiosInstance";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-
-const API_URL = "http://api.metaxtrader.com/api/users/settings";
 
 const Settings = () => {
   const { theme, toggleTheme } = useTheme();
-  const { user, setUser, logout } = useUser();
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+  const { user, logout, fetchCurrentUser } = useAuth();
 
   // Local state
   const [profileFile, setProfileFile] = useState(null);
-  const [profilePreview, setProfilePreview] = useState(user?.profileImage || null);
+  const [profilePreview, setProfilePreview] = useState(null);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const [phoneEmail, setPhoneEmail] = useState("");
-
   const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  // ✅ Keep preview synced with user
+  useEffect(() => {
+    if (user?.profileImage) {
+      setProfilePreview(user.profileImage);
+    }
+  }, [user]);
 
   // ---------------- PROFILE IMAGE ----------------
   const handleProfileImageChange = (e) => {
@@ -45,20 +44,15 @@ const Settings = () => {
     formData.append("photo", profileFile);
 
     try {
-      const res = await axios.patch(`${API_URL}/profile-image`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
+      const res = await api.put("/api/users/settings/profile-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-
-      setUser((prev) => ({
-        ...prev,
-        profileImage: res.data.imageUrl,
-      }));
 
       toast.success("Profile picture updated!");
       setProfileFile(null);
+
+      // ✅ Refresh canonical user after upload
+      await fetchCurrentUser();
     } catch (err) {
       console.error(err);
       toast.error("Failed to upload profile image");
@@ -72,19 +66,17 @@ const Settings = () => {
       return toast.error("New passwords do not match");
 
     try {
-      await axios.patch(
-        `${API_URL}/password`,
-        { currentPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.patch("/api/users/settings/password", {
+        currentPassword,
+        newPassword,
+      });
 
       toast.success("Password updated!");
-
       setCurrentPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
     } catch (err) {
-      toast.error(err.response?.data?.msg || "Failed to update password");
+      toast.error(err?.response?.data?.message || "Failed to update password");
     }
   };
 
@@ -93,11 +85,9 @@ const Settings = () => {
     e.preventDefault();
 
     try {
-      await axios.post(
-        `${API_URL}/phone-request`,
-        { email: phoneEmail },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post("/api/users/settings/phone-request", {
+        email: phoneEmail,
+      });
 
       toast.info("Verification email sent!");
       setPhoneEmail("");
@@ -111,7 +101,7 @@ const Settings = () => {
     e.preventDefault();
 
     try {
-      await axios.post(`${API_URL}/password-reset-request`, {
+      await api.post("/api/users/settings/password-reset-request", {
         email: resetEmail,
       });
 
@@ -124,23 +114,18 @@ const Settings = () => {
   };
 
   // ---------------- THEME SWITCH ----------------
-const handleThemeChange = async (e) => {
-  const newTheme = e.target.value;
+  const handleThemeChange = async (e) => {
+    const newTheme = e.target.value;
 
-  try {
-    await axios.patch(
-      `${API_URL}/theme`,
-      { theme: newTheme },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    toggleTheme(newTheme);
-    toast.success(`Theme updated to ${newTheme}`);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to update theme");
-  }
-};
+    try {
+      await api.patch("/api/users/settings/theme", { theme: newTheme });
+      toggleTheme(newTheme);
+      toast.success(`Theme updated to ${newTheme}`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update theme");
+    }
+  };
 
   // ---------------- LOGOUT ----------------
   const handleLogout = () => logout();
@@ -157,8 +142,10 @@ const handleThemeChange = async (e) => {
       <div className="settings-section">
         <h3>Profile Picture</h3>
         <div className="profile-image-preview">
-          <img src={profilePreview || "/default-avatar.png"} alt="Preview" />
-
+          <img
+            src={profilePreview || "/images/default-avatar.png"}
+            alt="Preview"
+          />
           <input type="file" accept="image/*" onChange={handleProfileImageChange} />
         </div>
         <button onClick={uploadProfileImage}>Upload New Picture</button>
@@ -232,7 +219,6 @@ const handleThemeChange = async (e) => {
       {/* THEME SWITCH */}
       <div className="settings-section">
         <h3>Theme</h3>
-
         <div className="theme-toggle">
           <label>Choose Theme:</label>
           <select value={theme} onChange={handleThemeChange}>
