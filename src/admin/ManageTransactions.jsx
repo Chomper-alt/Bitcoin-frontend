@@ -26,7 +26,7 @@ export default function AdminTransactions() {
     try {
       setUpdatingId(id);
       setError("");
-      await api.patch(`/admin/transactions/${id}`, { status });
+      await api.patch(`/api/admin/transactions/${id}`, { status });
       fetchTransactions();
     } catch (err) {
       console.error("❌ Failed to update transaction:", err);

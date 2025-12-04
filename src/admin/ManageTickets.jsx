@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "../utils/axiosInstance.js";
 import "./Admin.css";
+import api from "../utils/axiosInstance.js";
 
 export default function ManageTickets() {
   const [tickets, setTickets] = useState([]);
@@ -11,7 +11,7 @@ export default function ManageTickets() {
     const fetchTickets = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("/api/admin/tickets", {
+        const res = await api.get("/api/admin/tickets", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTickets(res.data || []);
@@ -29,7 +29,7 @@ export default function ManageTickets() {
   const closeTicket = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.put(
+      const res = await api.put(
         `/api/admin/tickets/${id}/close`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
@@ -47,7 +47,7 @@ export default function ManageTickets() {
     if (!message) return;
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.patch(
+      const res = await api.patch(
         `/api/admin/tickets/${id}/reply`,
         { message },
         { headers: { Authorization: `Bearer ${token}` } }

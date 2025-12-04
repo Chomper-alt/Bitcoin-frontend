@@ -12,7 +12,7 @@ export default function AdminWalletMod() {
 
   const fetchUsers = async () => {
     try {
-      const res = await api.get("/admin/users");
+      const res = await api.get("/api/admin/users");
       setUsers(res.data.users || []);
     } catch (err) {
       console.error("Failed to fetch users:", err);
@@ -28,8 +28,8 @@ export default function AdminWalletMod() {
     try {
       const endpoint =
         type === "add"
-          ? "/admin/wallet-mod/add"
-          : "/admin/wallet-mod/subtract";
+          ? "/api/admin/wallet-mod/add"
+          : "/api/admin/wallet-mod/subtract";
 
       const res = await api.patch(endpoint, {
         userId: selectedUser,

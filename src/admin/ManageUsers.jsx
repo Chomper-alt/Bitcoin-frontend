@@ -22,7 +22,7 @@ const fetchUsers = async () => {
 
   const updateRole = async (id, role) => {
     try {
-      await api.patch(`/admin/users/${id}/role`, { role });
+      await api.patch(`/api/admin/users/${id}/role`, { role });
       fetchUsers();
     } catch (err) {
       console.error("❌ Failed to update role:", err);
@@ -31,7 +31,7 @@ const fetchUsers = async () => {
 
   const handleSuspend = async (id) => {
     try {
-      await api.patch(`/admin/users/${id}/suspend`);
+      await api.patch(`/api/admin/users/${id}/suspend`);
       fetchUsers();
     } catch (err) {
       console.error("❌ Failed to suspend/unsuspend user:", err);
@@ -41,7 +41,7 @@ const fetchUsers = async () => {
   const handleDeactivate = async (id) => {
     if (!window.confirm("Are you sure you want to deactivate this account?")) return;
     try {
-      await api.patch(`/admin/users/${id}/deactivate`);
+      await api.patch(`/api/admin/users/${id}/deactivate`);
       fetchUsers();
     } catch (err) {
       console.error("❌ Failed to deactivate user:", err);

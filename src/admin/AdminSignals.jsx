@@ -14,7 +14,7 @@ export default function AdminSignals() {
   // 📡 Fetch all signals
   const fetchSignals = async () => {
     try {
-      const res = await api.get("/admin/signal-codes");
+      const res = await api.get("/api/admin/signal-codes");
       setSignals(res.data.codes || res.data); // backend may return { codes }
     } catch (err) {
       console.error("Error fetching signals", err);
@@ -32,7 +32,7 @@ export default function AdminSignals() {
     }
 
     try {
-      await api.post("/admin/signal-codes", {
+      await api.post("/api/admin/signal-codes", {
         level,
         durationDays: Number(durationDays),
         expectedProfit: expectedProfit.includes(",")
@@ -55,7 +55,7 @@ export default function AdminSignals() {
   // 🔄 Toggle signal status
   const toggleSignal = async (id) => {
     try {
-      await api.patch(`/admin/signal-codes/${id}/toggle`);
+      await api.patch(`/api/admin/signal-codes/${id}/toggle`);
       fetchSignals();
     } catch (err) {
       console.error("Error toggling signal", err);
@@ -66,7 +66,7 @@ export default function AdminSignals() {
   const deleteSignal = async (id) => {
     if (!window.confirm("Delete this signal?")) return;
     try {
-      await api.delete(`/admin/signal-codes/${id}`);
+      await api.delete(`/api/admin/signal-codes/${id}`);
       fetchSignals();
     } catch (err) {
       console.error("Error deleting signal", err);
