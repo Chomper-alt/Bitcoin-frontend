@@ -35,7 +35,7 @@ const RequestSignalCode = () => {
         return;
       }
       try {
-        const res = await api.get("http://api.metaxtrader.com/api/users/me", {
+        const res = await api.get("/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         // res.data should include vipLevel or vipLevel string; normalize to number
@@ -89,7 +89,7 @@ const RequestSignalCode = () => {
 
     try {
       const res = await api.post(
-        "http://api.metaxtrader.com/api/signals/request",
+        "/api/signals/request",
         { email, type },
         {
           headers: {

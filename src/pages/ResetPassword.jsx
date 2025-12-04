@@ -1,7 +1,7 @@
 // src/pages/ResetPassword.jsx
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import { toast } from "react-toastify";
 
 const API_URL = "http://api.metaxtrader.com/api/users/settings";
@@ -20,7 +20,7 @@ const ResetPassword = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/password-reset/${token}`, { newPassword });
+      await api.post(`${API_URL}/password-reset/${token}`, { newPassword });
       toast.success("✅ Password reset successful. Please log in.");
       navigate("/login");
     } catch (err) {
