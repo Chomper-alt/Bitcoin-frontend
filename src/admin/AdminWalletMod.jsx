@@ -10,21 +10,34 @@ export default function AdminWalletMod() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // ✅ Fetch users safely
   const fetchUsers = async () => {
     try {
       const res = await api.get("/api/admin/users");
-      setUsers(res.data.users || []);
+
+      const userArray =
+        res?.data?.users ||
+        res?.data?.data ||
+        res?.data ||
+        [];
+
+      setUsers(Array.isArray(userArray) ? userArray : []);
     } catch (err) {
-      console.error("Failed to fetch users:", err);
+      console.error("❌ Failed to fetch users:", err);
+      setUsers([]); // ✅ prevent crash
     }
   };
 
+  // ✅ Wallet modification
   const handleUpdate = async (type) => {
-    if (!selectedUser || !amount || amount <= 0) {
+    if (!selectedUser || !amount || Number(amount) <= 0) {
       setMessage("Please select a user and enter a valid amount.");
       return;
     }
+
     setLoading(true);
+    setMessage("");
+
     try {
       const endpoint =
         type === "add"
@@ -36,11 +49,11 @@ export default function AdminWalletMod() {
         amount: Number(amount),
       });
 
-      setMessage(res.data.message);
+      setMessage(res?.data?.message || "Wallet updated successfully!");
       setAmount("");
     } catch (err) {
-      console.error(err);
-      setMessage(err.response?.data?.message || "Failed to update wallet");
+      console.error("❌ Wallet mod error:", err);
+      setMessage(err?.response?.data?.message || "Failed to update wallet");
     } finally {
       setLoading(false);
     }
@@ -88,14 +101,15 @@ export default function AdminWalletMod() {
             disabled={loading}
             className="btn-add"
           >
-            Add Deposit
+            {loading ? "Processing..." : "Add Deposit"}
           </button>
+
           <button
             onClick={() => handleUpdate("subtract")}
             disabled={loading}
             className="btn-subtract"
           >
-            Subtract / Withdraw
+            {loading ? "Processing..." : "Subtract / Withdraw"}
           </button>
         </div>
       </div>

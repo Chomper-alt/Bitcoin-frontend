@@ -12,11 +12,21 @@ export default function AdminTransactions() {
     try {
       setLoading(true);
       setError("");
-      const res = await api.get("/admin/transactions");
-      setTransactions(res.data);
+
+      // ✅ SAFE API CALL
+      const res = await api.get("/api/admin/transactions");
+
+      // ✅ FORCE ARRAY SHAPE
+      const txArray =
+        res?.data?.transactions ||
+        res?.data ||
+        [];
+
+      setTransactions(Array.isArray(txArray) ? txArray : []);
     } catch (err) {
       console.error("❌ Failed to fetch transactions:", err);
       setError("Failed to fetch transactions. Please try again.");
+      setTransactions([]); // ✅ prevent crash
     } finally {
       setLoading(false);
     }
@@ -26,8 +36,10 @@ export default function AdminTransactions() {
     try {
       setUpdatingId(id);
       setError("");
+
       await api.patch(`/api/admin/transactions/${id}`, { status });
-      fetchTransactions();
+
+      await fetchTransactions();
     } catch (err) {
       console.error("❌ Failed to update transaction:", err);
       setError("Failed to update transaction. Please try again.");
@@ -62,50 +74,74 @@ export default function AdminTransactions() {
                 <th>Actions</th>
               </tr>
             </thead>
+
             <tbody>
-              {transactions.map((tx) => (
-                <tr key={tx._id}>
-                  <td>{tx.user?.username || "Unknown"}</td>
-                  <td>{tx.type}</td>
-                  <td>${tx.amount}</td>
-                  <td>{tx.currency || "-"}</td>
-                  <td>
-                    <span className={`status-badge ${tx.status.toLowerCase()}`}>
-                      {tx.status}
-                    </span>
-                  </td>
-                  <td>{new Date(tx.createdAt).toLocaleString()}</td>
-                  <td>
-                    {tx.status === "Pending" ? (
-                      <>
-                        <button
-                          className="btn btn-success"
-                          onClick={() => updateStatus(tx._id, "Approved")}
-                          disabled={updatingId === tx._id}
-                        >
-                          {updatingId === tx._id && "Processing... "}
-                          Approve
-                        </button>
-                        <button
-                          className="btn btn-danger"
-                          onClick={() => updateStatus(tx._id, "Rejected")}
-                          disabled={updatingId === tx._id}
-                        >
-                          {updatingId === tx._id && "Processing... "}
-                          Reject
-                        </button>
-                      </>
-                    ) : (
-                      "-"
-                    )}
+              {transactions.length > 0 ? (
+                transactions.map((tx) => {
+                  const status = tx.status?.toLowerCase?.() || "unknown";
+
+                  return (
+                    <tr key={tx._id}>
+                      <td>{tx.user?.username || "Unknown"}</td>
+                      <td>{tx.type}</td>
+                      <td>${tx.amount}</td>
+                      <td>{tx.currency || "-"}</td>
+
+                      <td>
+                        <span className={`status-badge ${status}`}>
+                          {status}
+                        </span>
+                      </td>
+
+                      <td>
+                        {tx.createdAt
+                          ? new Date(tx.createdAt).toLocaleString()
+                          : "-"}
+                      </td>
+
+                      <td>
+                        {status === "pending" ? (
+                          <>
+                            <button
+                              className="btn btn-success"
+                              onClick={() =>
+                                updateStatus(tx._id, "approved")
+                              }
+                              disabled={updatingId === tx._id}
+                            >
+                              {updatingId === tx._id
+                                ? "Processing..."
+                                : "Approve"}
+                            </button>
+
+                            <button
+                              className="btn btn-danger"
+                              onClick={() =>
+                                updateStatus(tx._id, "rejected")
+                              }
+                              disabled={updatingId === tx._id}
+                            >
+                              {updatingId === tx._id
+                                ? "Processing..."
+                                : "Reject"}
+                            </button>
+                          </>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="7" className="empty-text">
+                    No transactions found.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-          {transactions.length === 0 && (
-            <p className="empty-text">No transactions found.</p>
-          )}
         </div>
       )}
     </div>
