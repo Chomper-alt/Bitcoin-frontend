@@ -105,7 +105,7 @@ export default function AdminTransactions() {
                             <button
                               className="btn btn-success"
                               onClick={() =>
-                                updateStatus(tx._id, "approved")
+                                updateStatus(tx._id, "Approved")
                               }
                               disabled={updatingId === tx._id}
                             >
@@ -117,7 +117,7 @@ export default function AdminTransactions() {
                             <button
                               className="btn btn-danger"
                               onClick={() =>
-                                updateStatus(tx._id, "rejected")
+                                updateStatus(tx._id, "Rejected")
                               }
                               disabled={updatingId === tx._id}
                             >
