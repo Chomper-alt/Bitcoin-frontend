@@ -52,13 +52,7 @@ export default function VipDashboard() {
         setHistory(Array.isArray(historyList) ? historyList : []);
 
         // ✅ SAFE PROGRESS OBJECT
-        const progressObj =
-          progressRes.data?.progress ||
-          progressRes.data?.data ||
-          progressRes.data ||
-          null;
-
-        setProgress(progressObj && typeof progressObj === "object" ? progressObj : null);
+       setProgress(progressRes.data)
       } catch (err) {
         console.error("❌ Failed to fetch VIP data:", err);
         setHistory([]);

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/axiosInstance"; // ✅ USE GLOBAL AXIOS
 import { useTheme } from "../../contexts/ThemeContext";
+import { useAuth } from "../../contexts/AuthContext"
 import "./LiveTrade.css";
 
 export default function LiveTrade() {
@@ -17,6 +18,8 @@ export default function LiveTrade() {
   const [tradeAmount, setTradeAmount] = useState(0);
   const [tradeDuration, setTradeDuration] = useState(60);
   const [timeLeft, setTimeLeft] = useState(null);
+
+  const { fetchCurrentUser } = useAuth();
 
   /* ===============================
      ✅ FETCH WALLET BALANCE
@@ -116,7 +119,7 @@ export default function LiveTrade() {
       const { trade, balance } = res.data;
 
       setActiveTrade(trade);
-      setWalletBalance(balance);
+      setWalletBalance(balance); 
       setHistory((prev) => [trade, ...prev]);
       setTimeLeft(Number(trade.duration));
     } catch (err) {
@@ -142,7 +145,7 @@ export default function LiveTrade() {
 
       setActiveTrade(null);
       setWalletBalance(balance);
-
+      await fetchCurrentUser();
       setHistory((prev) =>
         prev.map((t) => (t._id === trade._id ? trade : t))
       );
@@ -164,7 +167,7 @@ export default function LiveTrade() {
 
       setActiveTrade(null);
       setWalletBalance(balance);
-
+      await fetchCurrentUser();
       setHistory((prev) => [trade, ...prev]);
     } catch (err) {
       console.error("❌ Auto close error:", err.response?.data || err.message);
