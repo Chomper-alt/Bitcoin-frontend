@@ -27,7 +27,7 @@ const RequestSignalCode = () => {
   };
 
   // Allowed string-based levels order
-  const levels = ["trial", "bronze", "silver", "gold", "diamond", "platinum"];
+  const levels = ["trial", "bronze", "silver", "gold", "diamond", "platinum", "master", "legendary", "eternal"];
 
   // Fetch vipLevel from server to ensure we have the latest value
   useEffect(() => {
