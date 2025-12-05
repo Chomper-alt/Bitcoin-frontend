@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./AdminTransactions.css";
 
 const AdminTransactions = () => {
@@ -13,7 +13,7 @@ const AdminTransactions = () => {
   const fetchPending = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/api/admin/transactions/pending", {
+      const res = await api.get("/api/admin/transactions/pending", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTransactions(res.data.pending || []);
@@ -33,7 +33,7 @@ const AdminTransactions = () => {
     setSubmitting(true);
     setError("");
     try {
-      const res = await axios.post(
+      const res = await api.post(
         `/api/admin/transactions/${id}/${action}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }

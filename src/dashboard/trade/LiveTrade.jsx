@@ -1,6 +1,6 @@
 // src/dashboard/trade/LiveTrade.jsx
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../utils/axiosInstance.js";
 import { useTheme } from "../../contexts/ThemeContext";   // ✅ IMPORT THEME
 import "./LiveTrade.css";
 

@@ -1,7 +1,7 @@
 // src/dashboard/Withdraw.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./Withdraw.css";
 
 const Withdraw = () => {
@@ -26,7 +26,7 @@ const Withdraw = () => {
       setSubmitting(true);
       setError("");
 
-      await axios.post(
+      await api.post(
         "/api/wallet/withdraw",
         { currency: activeCrypto, address: walletAddress, amount },
         { headers: { Authorization: `Bearer ${token}` } }

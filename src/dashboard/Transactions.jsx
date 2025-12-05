@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./Transactions.css";
 import { FaBell } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
@@ -20,13 +20,13 @@ const Transactions = () => {
         setLoading(true);
 
         // fetch balance
-        const balanceRes = await axios.get("/api/wallet/balance", {
+        const balanceRes = await api.get("/api/wallet/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBalance(balanceRes.data.balance ?? 0);
 
         // fetch transactions
-        const txRes = await axios.get("/api/wallet/transactions", {
+        const txRes = await api.get("/api/wallet/transactions", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTransactions(txRes.data.transactions || []);

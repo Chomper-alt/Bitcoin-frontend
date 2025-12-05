@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./Wallet.css";
 
 const Wallet = () => {
@@ -14,7 +14,7 @@ const Wallet = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get("/api/wallet/balance", {
+        const res = await api.get("/api/wallet/balance", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBalance(res.data.balance ?? 0);

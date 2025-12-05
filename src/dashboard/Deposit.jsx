@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./Deposit.css";
 
 const Deposit = () => {
@@ -41,7 +41,7 @@ const Deposit = () => {
       setSubmitting(true);
       setError("");
 
-      await axios.post(
+      await api.post(
         "/api/wallet/deposit",
         { amount: depositAmount, currency: activeCrypto },
         { headers: { Authorization: `Bearer ${token}` } }
