@@ -21,6 +21,9 @@ const RequestSignalCode = () => {
     3: "gold",
     4: "diamond",
     5: "platinum",
+    6: "master",
+    7: "legendary",
+    8: "eternal"
   };
 
   // Allowed string-based levels order
