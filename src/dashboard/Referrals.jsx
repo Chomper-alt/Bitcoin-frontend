@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../utils/axiosInstance.js";
 import "./Referrals.css";
 
 const Referrals = () => {
@@ -18,13 +18,13 @@ const Referrals = () => {
         setLoading(true);
 
         // --- Fetch referrals ---
-        const refRes = await axios.get("/api/referrals", {
+        const refRes = await api.get("/api/referrals", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setReferrals(refRes.data.referrals || []);
 
         // --- Fetch user referral code ---
-        const meRes = await axios.get("/api/users/me", {
+        const meRes = await api.get("/api/users/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
