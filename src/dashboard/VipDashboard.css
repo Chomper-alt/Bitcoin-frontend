@@ -119,3 +119,17 @@
 .progress-fill.diamond {
   background: linear-gradient(90deg, #00c6ff, #0072ff);
 }
+
+@media (max-width: 768px) {
+  .vip-dashboard {
+    padding: 0;
+  }
+
+  .vip-progress {
+    width: 100%;
+  }
+
+  .vip-history {
+    gap: 12px;
+  }
+}

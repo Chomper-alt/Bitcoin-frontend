@@ -158,7 +158,10 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .wallet-actions {
+  .wallet-cards {
+    display: flex;
     flex-direction: column;
+    gap: 16px;
   }
 }
+

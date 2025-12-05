@@ -112,3 +112,105 @@ button {
   cursor: pointer;
 }
 
+/* ======================================
+   ✅ UNIVERSAL MOBILE FIX (ALL PAGES)
+   ====================================== */
+
+/* 1️⃣ Prevent horizontal overflow everywhere */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 2️⃣ Force all sections to respect screen width */
+.dashboard-content > * {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* 3️⃣ Fix ALL cards, panels, boxes */
+.card,
+.wallet-card,
+.trade-card,
+.vip-card,
+.settings-card,
+.profile-card {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 4️⃣ Fix ALL button groups on mobile */
+@media (max-width: 768px) {
+  .btn-group,
+  .trade-controls,
+  .wallet-actions,
+  .settings-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+/* 5️⃣ Fix ALL inputs and selects */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    font-size: 14px;
+  }
+}
+
+/* 6️⃣ Fix ALL grid layouts */
+@media (max-width: 900px) {
+  .grid,
+  .dashboard-grid,
+  .wallet-grid,
+  .vip-grid,
+  .trade-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 7️⃣ Fix TABLES (Transactions, Admin, Referrals) */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  min-width: 600px; /* allows scroll instead of squish */
+}
+
+/* 8️⃣ Fix large headers on mobile */
+@media (max-width: 600px) {
+  h1 { font-size: 20px; }
+  h2 { font-size: 18px; }
+  h3 { font-size: 16px; }
+  p  { font-size: 14px; }
+}
+
+/* 9️⃣ Fix TradingView iframe / charts */
+@media (max-width: 768px) {
+  iframe,
+  .chart-frame {
+    width: 100% !important;
+    height: 300px !important;
+  }
+}
+
+/* 🔟 Fix padding squeeze on very small phones */
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 0.8rem;
+  }
+}
+

@@ -50,3 +50,19 @@
 .trade-btn:hover {
   background: #379bd1;
 }
+
+@media (max-width: 768px) {
+  .trade-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .active-trade {
+    width: 100%;
+  }
+
+  .trade-history table {
+    min-width: 650px;
+  }
+}
