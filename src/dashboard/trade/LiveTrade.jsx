@@ -1,11 +1,11 @@
 // src/dashboard/trade/LiveTrade.jsx
 import React, { useState, useEffect } from "react";
-import axios from "../../utils/axiosInstance.js";
-import { useTheme } from "../../contexts/ThemeContext";   // ✅ IMPORT THEME
+import api from "../../utils/axiosInstance"; // ✅ USE GLOBAL AXIOS
+import { useTheme } from "../../contexts/ThemeContext";
 import "./LiveTrade.css";
 
 export default function LiveTrade() {
-  const { theme } = useTheme();  // ✅ MUST BE AT THE TOP
+  const { theme } = useTheme();
 
   const [selectedPair, setSelectedPair] = useState("BINANCE:BTCUSDT");
   const [timeframe, setTimeframe] = useState("60");
@@ -18,31 +18,24 @@ export default function LiveTrade() {
   const [tradeDuration, setTradeDuration] = useState(60);
   const [timeLeft, setTimeLeft] = useState(null);
 
-  const token = localStorage.getItem("token");
-
-  const api = axios.create({
-    baseURL: "http://api.metaxtrader.com/api/livetrading",
-    headers: { Authorization: token ? `Bearer ${token}` : "" },
-  });
-
-  /** ---------------------------
-   *  Fetch Wallet Balance
-   --------------------------- */
+  /* ===============================
+     ✅ FETCH WALLET BALANCE
+  =============================== */
   const fetchBalance = async () => {
     try {
-      const res = await api.get("/balance");
+      const res = await api.get("/api/wallet/balance");
       setWalletBalance(Number(res.data.balance || 0));
     } catch (err) {
-      console.error("❌ Failed to fetch balance:", err);
+      console.error("❌ Failed to fetch balance:", err.response?.data || err.message);
     }
   };
 
-  /** ---------------------------
-   *  Fetch User Trades
-   --------------------------- */
+  /* ===============================
+     ✅ FETCH USER TRADES
+  =============================== */
   const fetchTrades = async () => {
     try {
-      const res = await api.get("/mytrades");
+      const res = await api.get("/api/livetrading/mytrades");
       const trades = res.data || [];
       setHistory(trades);
 
@@ -55,21 +48,21 @@ export default function LiveTrade() {
         setTimeLeft(remaining);
       }
     } catch (err) {
-      console.error("❌ Failed to fetch trades:", err);
+      console.error("❌ Failed to fetch trades:", err.response?.data || err.message);
     }
   };
 
-  /** ---------------------------
-   *  Initial Load
-   --------------------------- */
+  /* ===============================
+     ✅ INITIAL LOAD
+  =============================== */
   useEffect(() => {
     fetchBalance();
     fetchTrades();
   }, []);
 
-  /** ---------------------------
-   *  Countdown Timer
-   --------------------------- */
+  /* ===============================
+     ✅ COUNTDOWN TIMER
+  =============================== */
   useEffect(() => {
     if (!timeLeft) return;
 
@@ -87,23 +80,23 @@ export default function LiveTrade() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  /** ---------------------------
-   *  Mock price generator
-   --------------------------- */
+  /* ===============================
+     ✅ MOCK PRICE GENERATOR
+  =============================== */
   const mockPriceForPair = (pair) => {
     const base = {
-      "BINANCE:BTCUSDT": 112000,
-      "BINANCE:ETHUSDT": 4800,
-      "BINANCE:BNBUSDT": 1300,
-      "BINANCE:SOLUSDT": 240,
+      "BINANCE:BTCUSDT": 92000,
+      "BINANCE:ETHUSDT": 3200,
+      "BINANCE:BNBUSDT": 900,
+      "BINANCE:SOLUSDT": 150,
     }[pair] ?? 112000;
 
     return base + (Math.random() - 0.5) * base * 0.01;
   };
 
-  /** ---------------------------
-   *  Start Trade
-   --------------------------- */
+  /* ===============================
+     ✅ PLACE TRADE
+  =============================== */
   const placeTrade = async (direction) => {
     try {
       const amount = Number(tradeAmount);
@@ -119,30 +112,29 @@ export default function LiveTrade() {
         openPrice,
       };
 
-      const res = await api.post("/start", payload);
+      const res = await api.post("/api/livetrading/start", payload);
       const { trade, balance } = res.data;
 
       setActiveTrade(trade);
       setWalletBalance(balance);
       setHistory((prev) => [trade, ...prev]);
       setTimeLeft(Number(trade.duration));
-
     } catch (err) {
-      console.error("❌ Error placing trade:", err);
+      console.error("❌ Error placing trade:", err.response?.data || err.message);
       alert(err.response?.data?.message || "Failed to start trade");
     }
   };
 
-  /** ---------------------------
-   *  Manual Close
-   --------------------------- */
+  /* ===============================
+     ✅ MANUAL CLOSE
+  =============================== */
   const closeTrade = async () => {
     if (!activeTrade) return;
 
     try {
       const closePrice = mockPriceForPair(activeTrade.pair);
 
-      const res = await api.put(`/close/${activeTrade._id}`, {
+      const res = await api.put(`/api/livetrading/close/${activeTrade._id}`, {
         closePrice,
       });
 
@@ -154,46 +146,43 @@ export default function LiveTrade() {
       setHistory((prev) =>
         prev.map((t) => (t._id === trade._id ? trade : t))
       );
-
     } catch (err) {
-      console.error("❌ Error closing trade:", err);
+      console.error("❌ Error closing trade:", err.response?.data || err.message);
       alert(err.response?.data?.message || "Failed to close trade");
     }
   };
 
-  /** ---------------------------
-   *  Auto Close
-   --------------------------- */
+  /* ===============================
+     ✅ AUTO CLOSE
+  =============================== */
   const handleAutoClose = async () => {
     if (!activeTrade) return;
 
     try {
-      const res = await api.put(`/close/${activeTrade._id}`);
+      const res = await api.put(`/api/livetrading/close/${activeTrade._id}`);
       const { trade, balance } = res.data;
 
       setActiveTrade(null);
       setWalletBalance(balance);
 
       setHistory((prev) => [trade, ...prev]);
-
     } catch (err) {
-      console.error("❌ Auto close error:", err);
+      console.error("❌ Auto close error:", err.response?.data || err.message);
     }
   };
 
-  /** ---------------------------
-   *  TradingView Chart (fixed)
-   --------------------------- */
+  /* ===============================
+     ✅ TRADINGVIEW CHART
+  =============================== */
   const buildTVSrc = () =>
     `https://s.tradingview.com/widgetembed/?symbol=${selectedPair}&interval=${timeframe}&theme=${theme}&style=1&toolbarbg=0f0f0f`;
 
-  /** ---------------------------
-   *  UI RENDER
-   --------------------------- */
+  /* ===============================
+     ✅ UI
+  =============================== */
   return (
     <div className="live-trade">
       <div className="chart-header">
-
         <div className="pair-selector">
           <select value={selectedPair} onChange={(e) => setSelectedPair(e.target.value)}>
             <option value="BINANCE:BTCUSDT">BTC/USDT</option>
@@ -228,7 +217,6 @@ export default function LiveTrade() {
           src={buildTVSrc()}
           className="chart-frame"
           frameBorder="0"
-          allowtransparency="true"
           scrolling="no"
         />
       </div>
@@ -289,10 +277,7 @@ export default function LiveTrade() {
               const isProfit = h.result === "WIN";
 
               return (
-                <tr
-                  key={h._id}
-                  className={isClosed ? (isProfit ? "green" : "red") : ""}
-                >
+                <tr key={h._id} className={isClosed ? (isProfit ? "green" : "red") : ""}>
                   <td>{h.pair}</td>
                   <td>{h.direction.toUpperCase()}</td>
                   <td>${h.capital.toFixed(2)}</td>
@@ -310,7 +295,6 @@ export default function LiveTrade() {
           </tbody>
         </table>
       </div>
-
     </div>
   );
 }
