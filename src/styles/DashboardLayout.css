@@ -59,3 +59,70 @@
   flex: 1;
   padding: 2rem;
 }
+
+/* ===============================
+   ✅ MOBILE RESPONSIVE FIX
+   =============================== */
+
+.mobile-header {
+  display: none;
+  height: 56px;
+  align-items: center;
+  padding: 0 16px;
+  background: linear-gradient(90deg, #1a1a1a, #111);
+  color: white;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+}
+
+.mobile-menu-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.mobile-logo {
+  font-weight: 700;
+  color: #22d3ee;
+  font-size: 1.1rem;
+}
+
+/* ✅ MOBILE LAYOUT SWITCH */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column; /* ✅ STACK, NOT SIDE BY SIDE */
+  }
+
+  .mobile-header {
+    display: flex; /* ✅ SHOW MOBILE HEADER */
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 56px; /* below header */
+    left: 0;
+    height: calc(100vh - 56px);
+    width: 260px;
+    transform: translateX(-100%); /* ✅ HIDDEN BY DEFAULT */
+    z-index: 2000;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* ✅ SLIDE IN */
+  }
+
+  .dashboard-content {
+    width: 100%;
+    padding: 1.2rem; /* ✅ TIGHTER ON MOBILE */
+  }
+}
+
+/* ✅ KILLS SIDEWAYS SCROLL BUG */
+body {
+  overflow-x: hidden;
+}

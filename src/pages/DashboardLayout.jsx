@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import "../styles/DashboardLayout.css";
 import { useUser } from "../contexts/UserContext";
@@ -10,7 +10,8 @@ const DashboardLayout = () => {
   const current = location.pathname;
   const { theme } = useTheme();
 
-  // ✅ Wait until user data is loaded
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   if (loading) {
     return <div className="dashboard-container">Loading...</div>;
   }
@@ -31,19 +32,30 @@ const DashboardLayout = () => {
 
   return (
     <div className="dashboard-container">
-      <aside className="sidebar">
+
+      {/* ☰ MOBILE MENU BUTTON */}
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        ☰
+      </button>
+
+      {/* SIDEBAR */}
+      <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
         <Link to="/" className="sidebar-title">
           MetaTraderX
         </Link>
-
-         <div className={`dashboard-layout ${theme}`}></div>
 
         <nav className="nav-links">
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.path}
-              className={`nav-link ${current.startsWith(item.path) ? "active" : ""}`}
+              className={`nav-link ${
+                current.startsWith(item.path) ? "active" : ""
+              }`}
+              onClick={() => setSidebarOpen(false)} // auto-close on click
             >
               {item.name}
             </Link>
@@ -51,6 +63,7 @@ const DashboardLayout = () => {
         </nav>
       </aside>
 
+      {/* MAIN CONTENT */}
       <main className="dashboard-content">
         <Outlet />
       </main>
@@ -59,4 +72,5 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
+
 
