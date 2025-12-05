@@ -89,7 +89,7 @@ export default function LiveTrade() {
       "BINANCE:ETHUSDT": 3200,
       "BINANCE:BNBUSDT": 900,
       "BINANCE:SOLUSDT": 150,
-    }[pair] ?? 112000;
+    }[pair] ?? 92000;
 
     return base + (Math.random() - 0.5) * base * 0.01;
   };
