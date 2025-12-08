@@ -87,15 +87,20 @@ export default function LiveTrade() {
      ✅ MOCK PRICE GENERATOR
   =============================== */
   const mockPriceForPair = (pair) => {
-    const base = {
-      "BINANCE:BTCUSDT": 92000,
-      "BINANCE:ETHUSDT": 3200,
-      "BINANCE:BNBUSDT": 900,
-      "BINANCE:SOLUSDT": 150,
-    }[pair] ?? 92000;
+  // normalize to bare symbol, e.g. "ETHUSDT"
+  const clean = pair.replace("BINANCE:", "");
 
-    return base + (Math.random() - 0.5) * base * 0.01;
+  const baseMap = {
+    BTCUSDT: 92000,
+    ETHUSDT: 3200,
+    BNBUSDT: 900,
+    SOLUSDT: 150,
   };
+
+  const base = baseMap[clean] ?? 92000; // default to BTC if somehow unknown
+
+  return base + (Math.random() - 0.5) * base * 0.01;
+};
 
   /* ===============================
      ✅ PLACE TRADE
