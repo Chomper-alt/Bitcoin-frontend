@@ -41,7 +41,7 @@ import ManageTickets from "./admin/ManageTickets";
 import AdminSignals from "./admin/AdminSignals";
 import AdminSignalRequests from "./admin/AdminSignalRequest";
 
-
+import AppLoader from "./components/AppLoader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -49,7 +49,7 @@ function App() {
   const { user, loading } = useUser();
 
   // 🔥 CRITICAL: Do NOT render ANY route until user is restored
-  if (loading) return <div>Loading...</div>;
+  if (loading) return < AppLoader />;
 
   // Helpers
   const RequireUser = ({ children }) =>
