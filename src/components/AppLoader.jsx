@@ -6,7 +6,7 @@ export default function AppLoader() {
     <div className="app-loader">
       <div className="loader-box">
         <div className="spinner"></div>
-        <h1 className="logo-text">MetaXTrader</h1>
+        <h1 className="logo-text">MetaTraderX</h1>
         <p className="loading-text">Initializing secure trading environment…</p>
       </div>
     </div>
