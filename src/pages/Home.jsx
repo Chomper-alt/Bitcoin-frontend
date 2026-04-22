@@ -6,12 +6,10 @@ import WhatWeDo from "../components/WhatWeDo";
 import JoinTheCommunity from "../components/JoinTheCommunity";
 import SponsoredAds from "../components/SponsoredAds";
 import Footer from "../components/Footer";
-import Header from "../components/Header";
 
 const Home = () => {
   return (
     <>
-      <Header />
       <Hero />
       <Features />
       <HowItWorks />
