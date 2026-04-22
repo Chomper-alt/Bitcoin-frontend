@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
@@ -19,6 +20,8 @@ const vipNames = [
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { setUser } = useUser();
   const navigate = useNavigate();
 
@@ -32,33 +35,56 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      // 1️⃣ LOGIN
-      const loginRes = await api.post("/api/auth/login", formData);
-      const token = loginRes.data.token;
-      localStorage.setItem("token", token);
+    if (loading) return;
 
-      // 2️⃣ FETCH FULL USER DATA
-      const meRes = await api.get("/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
+    setLoading(true);
+    setError("");
+
+    try {
+      // 1) LOGIN
+      const loginRes = await api.post("/api/auth/login", {
+        email: formData.email.trim().toLowerCase(),
+        password: formData.password,
       });
 
-      const data = meRes.data;
+      const token = loginRes?.data?.token;
 
-      // 3️⃣ VIP MAPPING
-      const vipNumber = data.vipLevelNumber ?? 0;
-      const vipName = vipNames[vipNumber];
+      if (!token) {
+        throw new Error("No token returned from server");
+      }
+
+      localStorage.setItem("token", token);
+
+      // 2) TRY TO GET FULL USER DATA
+      // If /me fails, do NOT treat login itself as failed
+      let data = loginRes?.data?.user || null;
+
+      try {
+        const meRes = await api.get("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (meRes?.data) {
+          data = meRes.data;
+        }
+      } catch (meErr) {
+        console.warn("Could not fetch /api/auth/me after login:", meErr);
+      }
+
+      // 3) BUILD SAFE USER OBJECT
+      const vipNumber = data?.vipLevelNumber ?? 0;
+      const vipName = vipNames[vipNumber] ?? vipNames[0];
 
       const finalUser = {
-        ...data,
+        ...(data || {}),
         token,
         vipLevelNumber: vipNumber,
         vipBadge: vipName,
         vipTitle: vipName,
-        isAdmin: data.role === "admin",
+        isAdmin: data?.role === "admin",
       };
 
-      // 4️⃣ Save everywhere
+      // 4) SAVE USER
       setUser(finalUser);
 
       console.log("FULL USER:", finalUser);
@@ -66,7 +92,13 @@ const Login = () => {
       navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err);
-      alert(err.response?.data?.message || "Login failed");
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Login failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,13 +107,17 @@ const Login = () => {
       <form onSubmit={handleSubmit} className="form-card">
         <h2>Login</h2>
 
+        {error && <p className="error">{error}</p>}
+
         <label>Email</label>
         <input
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
+          autoComplete="email"
           required
+          disabled={loading}
         />
 
         <label>Password</label>
@@ -91,14 +127,18 @@ const Login = () => {
             name="password"
             value={formData.password}
             onChange={handleChange}
+            autoComplete="current-password"
             required
+            disabled={loading}
           />
-          <button type="button" onClick={togglePassword}>
+          <button type="button" onClick={togglePassword} disabled={loading}>
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
 
-        <button type="submit" className="submit-btn">Login</button>
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? "Signing in..." : "Login"}
+        </button>
 
         <p>
           <Link to="/forgot-password">Forgot Password?</Link>

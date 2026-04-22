@@ -10,7 +10,6 @@ const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // form state
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,11 +20,11 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [referredBy, setReferredBy] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-  // ✅ Auto-detect referral code from URL
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const refCode = params.get("ref");
@@ -36,35 +35,47 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (loading) return;
+
     setError("");
-
-    if (password !== confirmPassword) {
-      return setError("Passwords do not match");
-    }
-
-    if (!acceptedTerms) {
-      return setError("You must accept the Terms & Conditions");
-    }
-
-    const formData = {
-      username,
-      firstName,
-      lastName,
-      phone,
-      country,
-      email,
-      password,
-      referredBy: referredBy || null,
-    };
-
-    console.log("Submitting data: ", formData);
+    setLoading(true);
 
     try {
-      await register(formData);
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        return;
+      }
+
+      if (!acceptedTerms) {
+        setError("You must accept the Terms & Conditions");
+        return;
+      }
+
+      const formData = {
+        username: username.trim(),
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        phone: phone.trim(),
+        country,
+        email: email.trim().toLowerCase(),
+        password,
+        referredBy: referredBy?.trim() ? referredBy.trim() : null,
+      };
+
+      const result = await register(formData);
+
+      if (!result?.success) {
+        setError(result?.error || "Registration failed");
+        return;
+      }
+
       navigate("/dashboard");
     } catch (err) {
       console.error("❌ Register Error:", err);
-      setError(err.response?.data?.message || "Registration failed");
+      setError("Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,6 +83,7 @@ const Register = () => {
     <div className="register-container">
       <form className="register-form" onSubmit={handleSubmit} autoComplete="on">
         <h2>Create Account</h2>
+
         {error && <p className="error">{error}</p>}
 
         <input
@@ -81,6 +93,7 @@ const Register = () => {
           onChange={(e) => setUsername(e.target.value)}
           autoComplete="username"
           required
+          disabled={loading}
         />
 
         <input
@@ -90,6 +103,7 @@ const Register = () => {
           onChange={(e) => setFirstName(e.target.value)}
           autoComplete="given-name"
           required
+          disabled={loading}
         />
 
         <input
@@ -99,6 +113,7 @@ const Register = () => {
           onChange={(e) => setLastName(e.target.value)}
           autoComplete="family-name"
           required
+          disabled={loading}
         />
 
         <input
@@ -108,9 +123,10 @@ const Register = () => {
           onChange={(e) => setPhone(e.target.value)}
           autoComplete="tel"
           required
+          disabled={loading}
         />
 
-        <CountrySelect value={country} onChange={setCountry} />
+        <CountrySelect value={country} onChange={setCountry} disabled={loading} />
 
         <input
           type="email"
@@ -119,9 +135,9 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
           required
+          disabled={loading}
         />
 
-        {/* Password with toggle */}
         <div className="password-wrapper">
           <input
             type={showPassword ? "text" : "password"}
@@ -130,17 +146,18 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="new-password"
             required
+            disabled={loading}
           />
           <button
             type="button"
             className="toggle-btn"
             onClick={() => setShowPassword((prev) => !prev)}
+            disabled={loading}
           >
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
 
-        {/* Confirm Password with toggle */}
         <div className="password-wrapper">
           <input
             type={showConfirmPassword ? "text" : "password"}
@@ -149,11 +166,13 @@ const Register = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"
             required
+            disabled={loading}
           />
           <button
             type="button"
             className="toggle-btn"
             onClick={() => setShowConfirmPassword((prev) => !prev)}
+            disabled={loading}
           >
             {showConfirmPassword ? "Hide" : "Show"}
           </button>
@@ -165,15 +184,16 @@ const Register = () => {
           value={referredBy}
           onChange={(e) => setReferredBy(e.target.value)}
           autoComplete="off"
-          readOnly={!!referredBy} // ✅ lock field if auto-filled from URL
+          readOnly={!!new URLSearchParams(location.search).get("ref")}
+          disabled={loading}
         />
 
-        {/* ✅ Terms & Conditions checkbox */}
         <label className="terms-checkbox">
           <input
             type="checkbox"
             checked={acceptedTerms}
             onChange={(e) => setAcceptedTerms(e.target.checked)}
+            disabled={loading}
           />{" "}
           I agree to the{" "}
           <a href="/terms" target="_blank" rel="noopener noreferrer">
@@ -181,7 +201,9 @@ const Register = () => {
           </a>
         </label>
 
-        <button type="submit">Register</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating account..." : "Register"}
+        </button>
 
         <p className="cta-text">
           Already have an account?{" "}
