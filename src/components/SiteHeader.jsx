@@ -1,0 +1,70 @@
+import React from "react";
+
+const SiteHeader = () => {
+  return (
+    <>
+     <motion.header
+      className="site-header"
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      {/* Logo */}
+      <motion.div
+        className="logo"
+        initial={{ opacity: 0, x: -40 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, delay: 0.2 }}
+      >
+        <Link
+          to="/dashboard"
+          className={`{location.pathname === "/dashboard" ? "active" : ""}`}
+          >
+            MetaTraderX
+          </Link>
+      </motion.div>
+
+      {/* Navigation */}
+      <motion.div
+        className="nav-buttons"
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, delay: 0.3 }}
+      >
+        <Link
+          to="/register"
+          className={`nav-btn ${location.pathname === "/register" ? "active" : ""}`}
+        >
+          Register
+        </Link>
+        <Link
+          to="/login"
+          className={`nav-btn ${location.pathname === "/login" ? "active" : ""}`}
+        >
+          Login
+        </Link>
+        <Link
+          to="/support"
+          className={`nav-btn ${location.pathname === "/support" ? "active" : ""}`}
+        >
+          Support
+        </Link>
+        <Link
+          to="/review"
+          className={`nav-btn ${location.pathname === "/review" ? "active" : ""}`}
+        >
+          Review
+        </Link>
+        <Link
+          to="/about"
+          className={`nav-btn ${location.pathname === "/about" ? "active" : ""}`}
+        >
+          About Us
+        </Link>
+      </motion.div>
+    </motion.header>
+    </>
+  );
+};
+
+export default SiteHeader;
