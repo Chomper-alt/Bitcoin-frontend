@@ -42,40 +42,41 @@ import AdminSignals from "./admin/AdminSignals";
 import AdminSignalRequests from "./admin/AdminSignalRequest";
 
 import AppLoader from "./components/AppLoader";
+import MainLayout from "./components/MainLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const { user, loading } = useUser();
 
-  // 🔥 CRITICAL: Do NOT render ANY route until user is restored
-  if (loading) return < AppLoader />;
+  if (loading) return <AppLoader />;
 
-  // Helpers
   const RequireUser = ({ children }) =>
-    user ? children : <Navigate to="/login" />;
+    user ? children : <Navigate to="/login" replace />;
 
   const RequireAdmin = ({ children }) =>
-    user?.isAdmin ? children : <Navigate to="/dashboard" />;
+    user?.isAdmin ? children : <Navigate to="/dashboard" replace />;
 
   return (
     <>
       <Routes>
-        {/* PUBLIC ROUTES */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/support" element={<Support />} />
-        <Route path="/review" element={<Review />} />
-        <Route path="/terms" element={<Terms />} />
+        {/* PUBLIC ROUTES WITH PERSISTENT NAVBAR */}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/review" element={<Review />} />
+          <Route path="/terms" element={<Terms />} />
+        </Route>
 
         {/* AUTH ROUTES */}
         <Route
           path="/login"
-          element={!user ? <Login /> : <Navigate to="/dashboard/profile" />}
+          element={!user ? <Login /> : <Navigate to="/dashboard/profile" replace />}
         />
         <Route
           path="/register"
-          element={!user ? <Register /> : <Navigate to="/dashboard/profile" />}
+          element={!user ? <Register /> : <Navigate to="/dashboard/profile" replace />}
         />
         <Route path="/logout" element={<Logout />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
