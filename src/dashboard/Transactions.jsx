@@ -3,6 +3,7 @@ import api from "../utils/axiosInstance.js";
 import "./Transactions.css";
 import { FaBell } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
+import AppLoader from "../components/AppLoader";
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -52,7 +53,7 @@ const Transactions = () => {
       ? transactions
       : transactions.filter((tx) => tx.type === filter);
 
-  if (loading) return <div className="transactions-page">Loading...</div>;
+  if (loading) return <AppLoader label="Loading transactions..." compact />;
   if (error) return <div className="transactions-page error">{error}</div>;
 
   return (

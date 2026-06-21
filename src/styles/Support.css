@@ -1,16 +1,17 @@
 .support-page {
   max-width: 900px;
   margin: 2rem auto;
-  padding: 1rem 2rem;
-  background: #1a1a1a;
-  color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  padding: 1.25rem 2rem;
+  background: var(--card-bg-strong);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 16px 42px var(--shadow-color);
 }
 
 .support-page h1 {
   text-align: center;
-  color: #00d4ff;
+  color: var(--accent);
   margin-bottom: 1.5rem;
 }
 
@@ -19,49 +20,52 @@
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .tabs button {
-  padding: 0.5rem 1rem;
-  border: none;
-  background: #333;
-  color: #fff;
-  border-radius: 5px;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 999px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
+  font-weight: 700;
+  transition: all 0.22s ease;
 }
 
 .tabs button.active,
 .tabs button:hover {
-  background: #00d4ff;
-  color: #111;
-  transform: scale(1.05);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  transform: translateY(-1px);
 }
 
 .tab-content {
-  background: #222;
+  background: var(--card-bg);
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
 .tab-content h2 {
-  color: #00d4ff;
+  color: var(--accent);
   margin-bottom: 1rem;
 }
 
 .ticket-form label {
   display: block;
   margin-bottom: 1rem;
+  color: var(--text-secondary);
 }
 
 .ticket-form input,
 .ticket-form textarea {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.65rem;
   margin-top: 0.3rem;
-  border-radius: 5px;
-  border: none;
+  border-radius: 10px;
   resize: vertical;
 }
 
@@ -69,84 +73,96 @@
   margin-top: 1rem;
   padding: 0.7rem 1.5rem;
   border: none;
-  background: #00d4ff;
-  color: #111;
-  border-radius: 5px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
+  border-radius: 999px;
   cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  font-weight: 800;
+  transition: all 0.22s ease;
 }
 
 .ticket-form button:hover {
-  background: #00a3cc;
-}
-/* FAQ Accordion */
-.faq-item {
-  border-bottom: 1px solid #444;
-  margin-bottom: 0.5rem;
+  transform: translateY(-1px);
 }
 
-.faq-question {
-  cursor: pointer;
-  padding: 0.8rem 1rem;
-  background: #333;
-  border-radius: 5px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 500;
-  transition: background 0.3s ease;
-}
-
-.faq-question:hover {
-  background: #00d4ff;
-  color: #111;
-}
-
-.faq-toggle {
-  font-size: 1.2rem;
-}
-
-.faq-answer {
-  padding: 0.8rem 1rem;
-  background: #222;
-  border-radius: 0 0 5px 5px;
-  margin-top: 0.2rem;
-  line-height: 1.5;
-  color: #ddd;
-}
-/* Tutorials Accordion */
+.faq-item,
 .tutorial-item {
-  border-bottom: 1px solid #444;
-  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.65rem;
 }
 
+.faq-question,
 .tutorial-title {
   cursor: pointer;
-  padding: 0.8rem 1rem;
-  background: #333;
-  border-radius: 5px;
+  padding: 0.85rem 1rem;
+  background: var(--card-bg-strong);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: 500;
-  transition: background 0.3s ease;
+  gap: 12px;
+  font-weight: 700;
+  transition: background 0.22s ease, color 0.22s ease;
 }
 
+.faq-question:hover,
 .tutorial-title:hover {
-  background: #00d4ff;
-  color: #111;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: var(--button-text);
 }
 
+.faq-toggle,
 .tutorial-toggle {
   font-size: 1.2rem;
+  flex: 0 0 auto;
 }
 
+.faq-answer,
 .tutorial-content {
-  padding: 0.8rem 1rem;
-  background: #222;
-  border-radius: 0 0 5px 5px;
+  padding: 0.85rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
   margin-top: 0.2rem;
-  line-height: 1.5;
-  color: #ddd;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .support-page {
+    max-width: calc(100% - 24px);
+    margin: 14px auto 24px;
+    padding: 18px 12px;
+    border-radius: 18px;
+  }
+
+  .support-page h1 {
+    font-size: clamp(1.6rem, 8vw, 2rem);
+    margin-bottom: 1.2rem;
+  }
+
+  .tabs {
+    gap: 8px;
+    margin-bottom: 1.2rem;
+  }
+
+  .tabs button {
+    min-height: 42px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.88rem;
+  }
+
+  .tab-content {
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .faq-question,
+  .tutorial-title {
+    padding: 0.85rem;
+    font-size: 0.94rem;
+  }
 }

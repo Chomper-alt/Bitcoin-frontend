@@ -1,128 +1,354 @@
+/* =========================================================
+   META X BROKER — DashboardLayout.css
+   CSS Production Cleanup v1
+   Desktop sidebar + mobile app shell/dashboard navigation.
+   ========================================================= */
+
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
-  background: linear-gradient(90deg, #1a1a1a, #111);
-  color: white;
+  min-height: 100dvh;
+  height: auto;
+  color: var(--text-primary);
+  background: var(--bg-gradient);
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .sidebar {
-  width: 240px;
-  background: linear-gradient(90deg, #1a1a1a, #111);
-  padding: 2rem 1rem;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  flex: 0 0 258px;
+  width: 258px;
+  min-height: 100dvh;
+  padding: 24px 14px;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+  gap: 18px;
+  background: var(--panel-bg);
+  border-right: 1px solid var(--border-color);
+  box-shadow: 18px 0 60px var(--shadow-color);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 40;
 }
 
 .sidebar-title {
-  display: block;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #22d3ee;
-  margin-bottom: 2rem;
-  text-decoration: none; /* removes underline */
-  cursor: pointer;
-}
-
-.sidebar-title:hover {
-  color: #38bdf8; /* lighter cyan on hover */
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  color: var(--button-text);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 22%, transparent);
+  text-decoration: none;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
 }
 
 .nav-links {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 7px;
 }
 
 .nav-link {
-  color: #d1d5db;
+  min-height: 45px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0.68rem 0.82rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
   text-decoration: none;
-  font-size: 1.1rem;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  transition: background 0.2s;
+  font-size: 0.94rem;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
 .nav-link:hover {
-  background: #1f2937;
+  color: var(--text-primary);
+  background: var(--accent-soft);
+  border-color: var(--border-color);
 }
 
 .nav-link.active {
-  background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  color: #0d1117;
-  font-weight: bold;
+  color: var(--button-text);
+  background: linear-gradient(135deg, var(--accent-2), var(--accent));
+  font-weight: 900;
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .dashboard-content {
   flex: 1;
-  padding: 2rem;
+  width: calc(100% - 258px);
+  min-width: 0;
+  height: auto;
+  padding: 24px;
+  color: var(--text-primary);
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
-/* ===============================
-   ✅ MOBILE RESPONSIVE FIX
-   =============================== */
+.dashboard-content > * {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-y: visible;
+}
 
-.mobile-header {
+.dashboard-mobile-topbar,
+.dashboard-bottom-nav,
+.sidebar-backdrop {
   display: none;
-  height: 56px;
-  align-items: center;
-  padding: 0 16px;
-  background: linear-gradient(90deg, #1a1a1a, #111);
-  color: white;
-  gap: 12px;
-  position: sticky;
-  top: 0;
-  z-index: 3000;
+}
+
+.mobile-menu-btn,
+.bottom-nav-button {
+  appearance: none;
+  font: inherit;
 }
 
 .mobile-menu-btn {
-  font-size: 24px;
-  background: none;
-  border: none;
-  color: white;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  color: var(--text-primary);
   cursor: pointer;
 }
 
 .mobile-logo {
-  font-weight: 700;
-  color: #22d3ee;
-  font-size: 1.1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
-/* ✅ MOBILE LAYOUT SWITCH */
 @media (max-width: 768px) {
   .dashboard-container {
-    flex-direction: column; /* ✅ STACK, NOT SIDE BY SIDE */
+    display: block;
+    min-height: 100dvh;
+    height: auto;
+    padding-top: 64px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+    overflow-y: visible;
   }
 
-  .mobile-header {
-    display: flex; /* ✅ SHOW MOBILE HEADER */
+  .dashboard-mobile-topbar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 2200;
+    height: 64px;
+    min-height: 64px;
+    max-height: 64px;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--panel-bg) 88%, transparent);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 8px 22px var(--shadow-color);
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    transform: none;
   }
+
+  .dashboard-mobile-topbar *,
+  .mobile-menu-btn,
+  .mobile-logo {
+    transform: none;
+    translate: none;
+  }
+
+  .dashboard-mobile-topbar .mobile-menu-btn {
+    display: none;
+  }
+
+  .dashboard-logo-link {
+    width: auto;
+    max-width: min(220px, 64vw);
+    height: 46px;
+    min-height: 46px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-decoration: none;
+    overflow: visible;
+  }
+
+  .dashboard-logo-img {
+    display: block;
+    width: min(190px, 58vw);
+    max-width: min(190px, 58vw);
+    height: auto;
+    max-height: 44px;
+    object-fit: contain;
+  }
+
+  .dashboard-header-home {
+    min-width: 72px;
+    min-height: 42px;
+    padding: 0 12px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: var(--button-text);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 18%, transparent);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 900;
+  }
+
 
   .sidebar {
     position: fixed;
-    top: 56px; /* below header */
-    left: 0;
-    height: calc(100vh - 56px);
-    width: 260px;
-    transform: translateX(-100%); /* ✅ HIDDEN BY DEFAULT */
-    z-index: 2000;
-    transition: transform 0.3s ease;
+    top: 0;
+    right: 0;
+    left: auto;
+    z-index: 2300;
+    width: min(84vw, 292px);
+    height: 100dvh;
+    min-height: 100dvh;
+    padding: calc(18px + env(safe-area-inset-top, 0px)) 12px calc(34px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(104%);
+    transition: transform 0.22s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .sidebar.open {
-    transform: translateX(0); /* ✅ SLIDE IN */
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2250;
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: rgba(0, 0, 0, 0.56);
+  }
+
+  .nav-link {
+    min-height: 43px;
+    font-size: 0.9rem;
   }
 
   .dashboard-content {
     width: 100%;
-    padding: 1.2rem; /* ✅ TIGHTER ON MOBILE */
+    min-height: auto;
+    padding: 12px 10px calc(112px + env(safe-area-inset-bottom, 0px));
+    overflow-y: visible;
   }
-}
 
-/* ✅ KILLS SIDEWAYS SCROLL BUG */
-body {
-  overflow-x: hidden;
+  .dashboard-content > * {
+    width: 100%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .dashboard-bottom-nav {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index: 130;
+    min-height: 64px;
+    padding: 6px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    gap: 3px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    background: var(--panel-bg);
+    box-shadow: 0 8px 22px var(--shadow-color);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .bottom-nav-link {
+    min-width: 0;
+    min-height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: var(--text-secondary);
+    background: transparent;
+    text-decoration: none;
+    font-size: 0.62rem;
+    font-weight: 800;
+    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .bottom-nav-link.active {
+    color: var(--button-text);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .bottom-nav-button {
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .dashboard-container.dashboard-simulator-mode {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dashboard-container.dashboard-simulator-mode .dashboard-content {
+    min-height: calc(100dvh - 58px - env(safe-area-inset-top, 0px));
+    padding: 8px 10px calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .dashboard-container.dashboard-simulator-mode .dashboard-bottom-nav {
+    display: none;
+  }
+
+  .dashboard-container.dashboard-wallet-mode {
+    min-height: 100dvh;
+    padding-bottom: calc(82px + env(safe-area-inset-bottom, 0px));
+    overflow: hidden;
+  }
+
+  .dashboard-container.dashboard-wallet-mode .dashboard-content {
+    height: calc(100dvh - 64px - 82px - env(safe-area-inset-bottom, 0px));
+    min-height: auto;
+    padding: 8px 10px 4px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .dashboard-container.dashboard-wallet-mode .dashboard-content > * {
+    flex: 1 1 auto;
+  }
+
+  .dashboard-container.dashboard-wallet-mode .dashboard-bottom-nav {
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  }
 }

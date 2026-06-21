@@ -1,7 +1,9 @@
 // src/dashboard/Withdraw.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaArrowLeft, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import api from "../utils/axiosInstance.js";
+import "./Deposit.css";
 import "./Withdraw.css";
 
 const Withdraw = () => {
@@ -42,17 +44,21 @@ const Withdraw = () => {
   };
 
   return (
-    <div className="withdraw-page">
-      <h1>Withdraw Funds</h1>
-      <div className="withdraw-container">
+    <main className="withdraw-page">
+      <header className="wallet-flow-header">
+        <Link to="/dashboard/wallet" className="wallet-back-action" aria-label="Back to Wallet">
+          <FaArrowLeft />
+          <span>Wallet</span>
+        </Link>
+        <h1>Withdraw Funds</h1>
+      </header>
+
+      <section className="withdraw-container">
         {!submitted ? (
           <form onSubmit={handleSubmit} className="withdraw-form">
             <label>
-              Select Currency
-              <select
-                value={activeCrypto}
-                onChange={(e) => setActiveCrypto(e.target.value)}
-              >
+              <span>Select Currency</span>
+              <select value={activeCrypto} onChange={(e) => setActiveCrypto(e.target.value)}>
                 <option value="BTC">BTC</option>
                 <option value="ETH">ETH</option>
                 <option value="USDT">USDT</option>
@@ -60,7 +66,7 @@ const Withdraw = () => {
             </label>
 
             <label>
-              {activeCrypto} Wallet Address
+              <span>{activeCrypto} Wallet Address</span>
               <input
                 type="text"
                 placeholder={`Enter your ${activeCrypto} wallet address`}
@@ -68,13 +74,14 @@ const Withdraw = () => {
                 onChange={(e) => setWalletAddress(e.target.value)}
               />
             </label>
+
             <p className="caution">
-              ⚠️ Only enter a valid {activeCrypto} wallet address. Incorrect
-              addresses may cause permanent loss of funds.
+              <FaExclamationTriangle aria-hidden="true" />
+              <span>Only enter a valid {activeCrypto} wallet address. Incorrect addresses may cause permanent loss of funds.</span>
             </p>
 
             <label>
-              Amount to Withdraw
+              <span>Amount to Withdraw</span>
               <input
                 type="number"
                 placeholder="Enter amount"
@@ -85,33 +92,19 @@ const Withdraw = () => {
 
             {error && <p className="error">{error}</p>}
 
-            <button
-              type="submit"
-              className="confirm-button"
-              disabled={submitting}
-            >
+            <button type="submit" className="confirm-button" disabled={submitting}>
               {submitting ? "Processing..." : "Confirm Withdrawal"}
             </button>
           </form>
         ) : (
-          <div className="confirmation-message">
+          <div className="confirmation-message wallet-flow-success">
+            <FaCheckCircle aria-hidden="true" />
             <h2>Withdrawal Request Submitted</h2>
-            <p>
-              You requested to withdraw <strong>{amount} {activeCrypto}</strong>{" "}
-              to <strong>{walletAddress}</strong>.
-            </p>
-            <p className="note">
-              Your request is pending admin approval. You will be notified once
-              it is processed.
-            </p>
+            <p>Your request is pending admin approval. You will be notified once it is processed.</p>
           </div>
         )}
-      </div>
-
-      <Link to="/dashboard/wallet" className="back-button">
-        ← Return to Dashboard
-      </Link>
-    </div>
+      </section>
+    </main>
   );
 };
 

@@ -55,3 +55,54 @@
   font-size: 1rem;
   color: #d1d5db;
 }
+
+/* Restore the original colorful feature-card identity in native app mode too. */
+@media (max-width: 768px) {
+  body.cap-native.app-public-home .features-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body.cap-native.app-public-home .feature-card {
+    color: #ffffff !important;
+    border: 0 !important;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28) !important;
+  }
+
+  body.cap-native.app-public-home .feature-card:nth-child(1) {
+    background: linear-gradient(135deg, #00d4ff, #0077ff) !important;
+  }
+
+  body.cap-native.app-public-home .feature-card:nth-child(2) {
+    background: linear-gradient(135deg, #ff8a00, #e52e71) !important;
+  }
+
+  body.cap-native.app-public-home .feature-card:nth-child(3) {
+    background: linear-gradient(135deg, #42e695, #3bb2b8) !important;
+  }
+
+  body.cap-native.app-public-home .feature-card:nth-child(4) {
+    background: linear-gradient(135deg, #f7971e, #ffd200) !important;
+  }
+
+  body.cap-native.app-public-home .feature-icon,
+  body.cap-native.app-public-home .feature-card h3,
+  body.cap-native.app-public-home .feature-card p {
+    color: #ffffff !important;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.22);
+  }
+
+  body.cap-native.app-public-home .feature-card p {
+    opacity: 0.96;
+  }
+}
+
+/* Static feature cards: no load/reveal dependency and no movement on hover. */
+.feature-card {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.feature-card:hover {
+  transform: none !important;
+}

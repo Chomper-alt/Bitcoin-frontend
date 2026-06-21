@@ -8,7 +8,9 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { UserProvider } from "./contexts/UserContext";
 
-import "../src/theme.css"
+import "./index.css";
+import "./theme.css";
+import "./styles/AppMobile.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

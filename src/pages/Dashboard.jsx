@@ -1,5 +1,6 @@
-import { useEffect, useState, useContext } from "react";
-import api from "../api/axios";
+import { useEffect, useState } from "react";
+import api from "../utils/axiosInstance.js";
+import AppLoader from "../components/AppLoader";
 import { useUser } from "../contexts/UserContext";
 
 const Dashboard = () => {
@@ -28,7 +29,7 @@ const Dashboard = () => {
     fetchDashboard();
   }, []);
 
-  if (loading) return <div className="text-center mt-10">Loading...</div>;
+  if (loading) return <AppLoader label="Loading dashboard..." compact />;
   if (!dashboardData) return <div className="text-center mt-10">Failed to load dashboard</div>;
 
   const { user, tradeSummary } = dashboardData; // all info from API

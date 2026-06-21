@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Activity, ArrowUpRight, BarChart3, Bitcoin, FlaskConical, LogOut, RotateCcw, Timer, TrendingUp, Waves, X } from "lucide-react";
+import { GiNotebook } from "react-icons/gi";
 import "./DemoTrade.css";
 
 export default function DemoTrade() {
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
 
   // === STATE ===
   const [data, setData] = useState([]);
@@ -13,10 +17,14 @@ export default function DemoTrade() {
   const [history, setHistory] = useState([]);
   const [trades, setTrades] = useState([]);
   const [countdown, setCountdown] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const dataRef = useRef([]);
+  const activeTradeRef = useRef(null);
 
   // User input
   const [tradeAmount, setTradeAmount] = useState("");
-  const [tradeDuration, setTradeDuration] = useState("");
+  const [tradeDuration, setTradeDuration] = useState("5");
+  const [selectedSide, setSelectedSide] = useState("BUY");
 
   // Toggles
   const [showEMA, setShowEMA] = useState(true);
@@ -74,67 +82,77 @@ export default function DemoTrade() {
     return emaArray;
   };
 
-  // === Place Trade ===
-  const placeTrade = (type) => {
-    if (!tradeAmount || tradeAmount <= 0 || !tradeDuration) return;
+  const latestPrice = data[data.length - 1]?.close ?? 0;
+  const startingBalance = 10000;
+  const profitLoss = Number(balance || 0) - startingBalance;
+  const profitPercent = startingBalance > 0 ? (profitLoss / startingBalance) * 100 : 0;
+  const activePnL = activeTrade
+    ? ((activeTrade.type === "BUY" ? latestPrice - activeTrade.entryPrice : activeTrade.entryPrice - latestPrice) / Math.max(activeTrade.entryPrice, 1)) * activeTrade.amount
+    : 0;
 
-    const currentCandle = data[data.length - 1];
+  const quickAmounts = [100, 500, 1000, 5000];
+
+  // === Place Trade ===
+  const placeTrade = (type = selectedSide) => {
+    const amount = Number(tradeAmount);
+    const duration = Number(tradeDuration);
+    const latestData = dataRef.current;
+    const currentCandle = latestData[latestData.length - 1];
+
+    if (!amount || amount <= 0 || !duration || !currentCandle) return;
+    if (activeTradeRef.current) return;
+
     const trade = {
+      id: `${Date.now()}-${type}`,
       type,
-      amount: parseFloat(tradeAmount),
+      amount,
       entryPrice: currentCandle.close,
-      startIndex: data.length - 1,
-      expiresAt: Date.now() + tradeDuration * 1000,
+      startIndex: latestData.length - 1,
+      expiresAt: Date.now() + duration * 1000,
     };
 
+    activeTradeRef.current = trade;
     setActiveTrade(trade);
+    setCountdown(duration);
     setTrades((prev) => [...prev, trade]);
+  };
+
+  const resolveTrade = (trade) => {
+    if (!trade) return;
+
+    const latestData = dataRef.current;
+    const exitPrice = latestData[latestData.length - 1]?.close ?? trade.entryPrice;
+    const won =
+      (trade.type === "BUY" && exitPrice > trade.entryPrice) ||
+      (trade.type === "SELL" && exitPrice < trade.entryPrice);
+    const result = won ? trade.amount : -trade.amount;
+
+    setBalance((prev) => Math.max(0, Number(prev || 0) + result));
+    setHistory((prev) => [...prev, { ...trade, exitPrice, result }]);
+    setActiveTrade(null);
+    activeTradeRef.current = null;
+    setCountdown(null);
   };
 
   // === Countdown + Resolve Trade ===
   useEffect(() => {
     if (!activeTrade) {
       setCountdown(null);
-      return;
+      return undefined;
     }
 
-    const timer = setInterval(() => {
-      const timeLeft = Math.max(
-        0,
-        Math.floor((activeTrade.expiresAt - Date.now()) / 1000)
-      );
-      setCountdown(timeLeft);
+    const timer = window.setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((activeTrade.expiresAt - Date.now()) / 1000));
+      setCountdown(remaining);
 
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-
-        // Close trade
-        const exitPrice = data[data.length - 1]?.close || activeTrade.entryPrice;
-        let result = 0;
-
-        if (
-          (activeTrade.type === "BUY" &&
-            exitPrice > activeTrade.entryPrice) ||
-          (activeTrade.type === "SELL" &&
-            exitPrice < activeTrade.entryPrice)
-        ) {
-          result = activeTrade.amount; // +100% profit
-          setBalance((b) => b + result);
-        } else {
-          result = -activeTrade.amount; // loss
-          setBalance((b) => b + result);
-        }
-
-        setHistory((prev) => [
-          ...prev,
-          { ...activeTrade, exitPrice, result },
-        ]);
-        setActiveTrade(null);
+      if (remaining <= 0) {
+        window.clearInterval(timer);
+        resolveTrade(activeTrade);
       }
-    }, 1000);
+    }, 250);
 
-    return () => clearInterval(timer);
-  }, [activeTrade, data]);
+    return () => window.clearInterval(timer);
+  }, [activeTrade]);
 
   // === Price feed simulation ===
   useEffect(() => {
@@ -146,7 +164,9 @@ export default function DemoTrade() {
       prevClose = newCandle.close;
       candles.push(newCandle);
       if (candles.length > 100) candles.shift();
-      setData([...candles]);
+      const nextCandles = [...candles];
+      dataRef.current = nextCandles;
+      setData(nextCandles);
     }, 1000);
 
     return () => clearInterval(interval);
@@ -157,252 +177,431 @@ export default function DemoTrade() {
     localStorage.setItem("demoBalance", balance);
   }, [balance]);
 
-  // === Chart Drawing ===
+  // === Chart Drawing: Terminal V3 ===
   useEffect(() => {
     if (!canvasRef.current || data.length === 0) return;
+
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.max(320, Math.floor(rect.width));
+    const height = Math.max(260, Math.floor(rect.height));
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, width, height);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const isMobileCanvas = width <= 640;
+    const pad = {
+      left: isMobileCanvas ? 12 : 16,
+      right: isMobileCanvas ? 54 : 66,
+      top: 14,
+      bottom: 16,
+    };
 
-    const leftMargin = 60;
-    const candleWidth = 8;
-    const spacing = 2;
-    const chartHeight = canvas.height * 0.7;
-    const volumeHeight = canvas.height * 0.2;
+    const plotW = Math.max(180, width - pad.left - pad.right);
+    const plotH = Math.max(190, height - pad.top - pad.bottom);
+    const mainH = Math.floor(plotH * 0.70);
+    const volumeH = showVolume ? Math.floor(plotH * 0.16) : 0;
+    const rsiH = showRSI ? Math.max(44, plotH - mainH - volumeH - 16) : 0;
+    const volumeY = pad.top + mainH + 8;
+    const rsiY = volumeY + volumeH + (showVolume ? 8 : 0);
+    const mainY = pad.top;
+    const chartRight = pad.left + plotW;
 
-    const maxPrice = Math.max(...data.map((c) => c.high));
-    const minPrice = Math.min(...data.map((c) => c.low));
-    const priceRange = maxPrice - minPrice;
+    const visibleTarget = isMobileCanvas ? 48 : 72;
+    const visibleData = data.slice(-visibleTarget);
+    const startIndex = Math.max(0, data.length - visibleData.length);
+    const highs = visibleData.map((c) => c.high);
+    const lows = visibleData.map((c) => c.low);
+    const rawMax = Math.max(...highs);
+    const rawMin = Math.min(...lows);
+    const rawRange = Math.max(1, rawMax - rawMin);
+    const maxPrice = rawMax + rawRange * 0.08;
+    const minPrice = rawMin - rawRange * 0.08;
+    const priceRange = Math.max(1, maxPrice - minPrice);
+    const step = plotW / Math.max(visibleData.length, 1);
+    const candleW = Math.max(3, Math.min(isMobileCanvas ? 7 : 9, step * 0.56));
 
-    const scaleY = (price) =>
-      chartHeight - ((price - minPrice) / priceRange) * chartHeight;
+    const priceY = (price) => mainY + ((maxPrice - price) / priceRange) * mainH;
+    const candleX = (i) => pad.left + i * step + step / 2;
+    const money = (value) => Number(value || 0).toLocaleString(undefined, {
+      maximumFractionDigits: 0,
+    });
 
-    // === Price Labels & Grid ===
-    ctx.fillStyle = "#ccc";
-    ctx.font = "12px Arial";
+    // background
+    const bg = ctx.createLinearGradient(0, 0, 0, height);
+    bg.addColorStop(0, "#07131f");
+    bg.addColorStop(1, "#050b12");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
+
+    // subtle grid
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "rgba(148, 163, 184, 0.10)";
+    ctx.fillStyle = "rgba(226, 232, 240, 0.78)";
+    ctx.font = isMobileCanvas ? "10px system-ui, -apple-system, Segoe UI" : "11px system-ui, -apple-system, Segoe UI";
     ctx.textAlign = "left";
     ctx.textBaseline = "middle";
 
-    const steps = 6;
-    for (let i = 0; i <= steps; i++) {
-      const price = minPrice + (i / steps) * priceRange;
-      const y = scaleY(price);
-      ctx.fillText(`$${price.toFixed(0)}`, 5, y);
-      ctx.strokeStyle = "#222";
+    const gridLines = 5;
+    for (let i = 0; i <= gridLines; i++) {
+      const y = mainY + (i / gridLines) * mainH;
       ctx.beginPath();
-      ctx.moveTo(leftMargin, y);
-      ctx.lineTo(canvas.width, y);
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(chartRight, y);
+      ctx.stroke();
+
+      const value = maxPrice - (i / gridLines) * priceRange;
+      ctx.fillStyle = "rgba(226, 232, 240, 0.70)";
+      ctx.fillText(money(value), chartRight + 8, y);
+    }
+
+    const verticalLines = 4;
+    ctx.strokeStyle = "rgba(148, 163, 184, 0.055)";
+    for (let i = 1; i < verticalLines; i++) {
+      const x = pad.left + (i / verticalLines) * plotW;
+      ctx.beginPath();
+      ctx.moveTo(x, mainY);
+      ctx.lineTo(x, mainY + mainH + volumeH + rsiH + 16);
       ctx.stroke();
     }
 
-    // === Candles ===
-    data.forEach((candle, i) => {
-      const x = leftMargin + i * (candleWidth + spacing);
-      const openY = scaleY(candle.open);
-      const closeY = scaleY(candle.close);
-      const highY = scaleY(candle.high);
-      const lowY = scaleY(candle.low);
-
-      ctx.strokeStyle = candle.close > candle.open ? "#0f0" : "#f00";
+    // volume zone divider
+    if (showVolume) {
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.10)";
       ctx.beginPath();
-      ctx.moveTo(x + candleWidth / 2, highY);
-      ctx.lineTo(x + candleWidth / 2, lowY);
+      ctx.moveTo(pad.left, volumeY);
+      ctx.lineTo(chartRight, volumeY);
+      ctx.stroke();
+    }
+
+    // RSI zone
+    if (showRSI) {
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.10)";
+      ctx.beginPath();
+      ctx.moveTo(pad.left, rsiY);
+      ctx.lineTo(chartRight, rsiY);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(96, 165, 250, 0.82)";
+      ctx.font = "10px system-ui, -apple-system, Segoe UI";
+      ctx.fillText("RSI", pad.left, rsiY + 10);
+    }
+
+    // volume bars
+    if (showVolume) {
+      const maxVol = Math.max(1, ...visibleData.map((c) => c.volume));
+      visibleData.forEach((candle, i) => {
+        const x = candleX(i) - candleW / 2;
+        const barH = Math.max(1, (candle.volume / maxVol) * (volumeH - 4));
+        const up = candle.close >= candle.open;
+        ctx.fillStyle = up ? "rgba(34, 197, 94, 0.28)" : "rgba(239, 68, 68, 0.25)";
+        ctx.fillRect(x, volumeY + volumeH - barH, candleW, barH);
+      });
+    }
+
+    // candles
+    visibleData.forEach((candle, i) => {
+      const x = candleX(i);
+      const openY = priceY(candle.open);
+      const closeY = priceY(candle.close);
+      const highY = priceY(candle.high);
+      const lowY = priceY(candle.low);
+      const up = candle.close >= candle.open;
+      const wick = up ? "rgba(34, 197, 94, 0.85)" : "rgba(239, 68, 68, 0.85)";
+      const body = up ? "#22e065" : "#ff3b3b";
+      const top = Math.min(openY, closeY);
+      const bodyH = Math.max(2, Math.abs(closeY - openY));
+
+      ctx.strokeStyle = wick;
+      ctx.lineWidth = 1.15;
+      ctx.beginPath();
+      ctx.moveTo(x, highY);
+      ctx.lineTo(x, lowY);
       ctx.stroke();
 
-      ctx.fillStyle = candle.close > candle.open ? "#0f0" : "#f00";
-      ctx.fillRect(
-        x,
-        Math.min(openY, closeY),
-        candleWidth,
-        Math.abs(closeY - openY) || 1
-      );
+      ctx.fillStyle = body;
+      ctx.fillRect(x - candleW / 2, top, candleW, bodyH);
     });
 
-    // === Volume Bars ===
-    if (showVolume) {
-      const maxVol = Math.max(...data.map((c) => c.volume));
-      data.forEach((candle, i) => {
-        const x = leftMargin + i * (candleWidth + spacing);
-        const volHeight = (candle.volume / maxVol) * volumeHeight;
-        ctx.fillStyle = "rgba(0, 150, 255, 0.5)";
-        ctx.fillRect(
-          x,
-          canvas.height - volHeight,
-          candleWidth,
-          volHeight
-        );
-      });
-    }
-
-    // === EMA ===
+    // EMA line
     if (showEMA) {
-      const ema = calculateEMA(data);
-      ctx.strokeStyle = "yellow";
+      const ema = calculateEMA(visibleData, 9);
+      ctx.strokeStyle = "rgba(250, 204, 21, 0.95)";
+      ctx.lineWidth = 1.45;
       ctx.beginPath();
       ema.forEach((value, i) => {
-        const x = leftMargin + i * (candleWidth + spacing);
-        const y =
-          chartHeight - ((value - minPrice) / priceRange) * chartHeight;
+        const x = candleX(i);
+        const y = priceY(value);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
     }
 
-    // === RSI ===
-    if (showRSI) {
-      const rsi = calculateRSI(data);
-      ctx.strokeStyle = "blue";
+    // RSI line in its own small zone
+    if (showRSI && rsiH > 0) {
+      const rsi = calculateRSI(visibleData, 14);
+      const offset = visibleData.length - rsi.length;
+      const rsiScaleY = (value) => rsiY + 4 + ((100 - value) / 100) * (rsiH - 8);
+      ctx.strokeStyle = "rgba(59, 130, 246, 0.95)";
+      ctx.lineWidth = 1.6;
       ctx.beginPath();
       rsi.forEach((value, i) => {
-        const x = leftMargin + (i + (data.length - rsi.length)) * (candleWidth + spacing);
-        const y =
-          chartHeight +
-          volumeHeight -
-          (value / 100) * volumeHeight;
+        const x = candleX(i + offset);
+        const y = rsiScaleY(value);
         if (i === 0) ctx.moveTo(x, y);
         else ctx.lineTo(x, y);
       });
       ctx.stroke();
 
-      ctx.fillStyle = "blue";
-      ctx.fillText("RSI", 10, chartHeight + 10);
+      // 70/30 guide lines
+      ctx.strokeStyle = "rgba(96, 165, 250, 0.18)";
+      [70, 30].forEach((level) => {
+        const y = rsiScaleY(level);
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(chartRight, y);
+        ctx.stroke();
+      });
     }
 
-    // === TRADE MARKERS ===
-    trades.forEach((trade) => {
-      const candleX = leftMargin + trade.startIndex * (candleWidth + spacing);
-      const priceY = scaleY(trade.entryPrice);
-
-      ctx.fillStyle = trade.type === "BUY" ? "lime" : "red";
+    // current price marker
+    const latest = visibleData[visibleData.length - 1];
+    if (latest) {
+      const y = priceY(latest.close);
+      const markerColor = latest.close >= latest.open ? "#22c55e" : "#ef4444";
+      ctx.strokeStyle = `${markerColor}99`;
+      ctx.setLineDash([4, 4]);
       ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(chartRight, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
 
+      const label = `$${money(latest.close)}`;
+      ctx.font = "10px system-ui, -apple-system, Segoe UI";
+      const labelW = ctx.measureText(label).width + 12;
+      ctx.fillStyle = markerColor;
+      ctx.fillRect(chartRight + 4, y - 10, labelW, 20);
+      ctx.fillStyle = "#03110a";
+      ctx.textAlign = "center";
+      ctx.fillText(label, chartRight + 4 + labelW / 2, y);
+      ctx.textAlign = "left";
+    }
+
+    // trade markers
+    trades.forEach((trade) => {
+      if (trade.startIndex < startIndex) return;
+      const idx = trade.startIndex - startIndex;
+      if (idx < 0 || idx >= visibleData.length) return;
+      const x = candleX(idx);
+      const y = priceY(trade.entryPrice);
+      const color = trade.type === "BUY" ? "#22c55e" : "#ef4444";
+      ctx.fillStyle = color;
+      ctx.beginPath();
       if (trade.type === "BUY") {
-        ctx.moveTo(candleX + candleWidth / 2, priceY - 12);
-        ctx.lineTo(candleX + candleWidth / 2 - 6, priceY - 2);
-        ctx.lineTo(candleX + candleWidth / 2 + 6, priceY - 2);
+        ctx.moveTo(x, y - 13);
+        ctx.lineTo(x - 6, y - 3);
+        ctx.lineTo(x + 6, y - 3);
       } else {
-        ctx.moveTo(candleX + candleWidth / 2, priceY + 12);
-        ctx.lineTo(candleX + candleWidth / 2 - 6, priceY + 2);
-        ctx.lineTo(candleX + candleWidth / 2 + 6, priceY + 2);
+        ctx.moveTo(x, y + 13);
+        ctx.lineTo(x - 6, y + 3);
+        ctx.lineTo(x + 6, y + 3);
       }
-
       ctx.closePath();
       ctx.fill();
     });
+
+    // time labels
+    ctx.fillStyle = "rgba(226, 232, 240, 0.65)";
+    ctx.font = "10px system-ui, -apple-system, Segoe UI";
+    ctx.textAlign = "center";
+    const labelY = height - 8;
+    const labelCount = 4;
+    for (let i = 0; i <= labelCount; i++) {
+      const x = pad.left + (i / labelCount) * plotW;
+      const mins = 15 * i;
+      ctx.fillText(`${String(10 + Math.floor(mins / 60)).padStart(2, "0")}:${String(mins % 60).padStart(2, "0")}`, x, labelY);
+    }
   }, [data, showEMA, showRSI, showVolume, trades]);
 
   return (
-    <div className="demo-trade">
-      <div className="header">
-        <h2>Demo Trading Simulator</h2>
-        <div>
-          <span className="balance">Balance: ${balance.toFixed(2)}</span>
-          <button className="reset-btn" onClick={resetBalance}>
-            Reset Balance
+    <div className="demo-trade demo-terminal-v2">
+      <section className="demo-account-card">
+        <div className="demo-account-copy">
+          <span className="demo-kicker"><FlaskConical size={16} /> Demo Account</span>
+          <p>Balance</p>
+          <strong>${Number(balance || 0).toFixed(2)}</strong>
+        </div>
+        <div className="demo-account-actions">
+          <button className="terminal-action-btn" onClick={resetBalance} aria-label="Reset demo balance" title="Reset balance">
+            <RotateCcw size={18} aria-hidden="true" />
+            <span>Reset</span>
+          </button>
+          <button className="terminal-action-btn" onClick={() => navigate("/dashboard/trade")} aria-label="Exit demo trading" title="Exit">
+            <LogOut size={18} aria-hidden="true" />
+            <span>Exit</span>
           </button>
         </div>
-      </div>
+      </section>
 
-      <canvas ref={canvasRef} className="chart"></canvas>
+      <section className="demo-pair-card">
+        <div className="demo-pair-left">
+          <span className="demo-coin-icon"><Bitcoin size={22} /></span>
+          <div>
+            <strong>BTC/USDT</strong>
+            <p>Bitcoin / Tether</p>
+          </div>
+        </div>
+        <div className="demo-pair-price">
+          <strong>${Number(latestPrice || 110000).toFixed(2)}</strong>
+          <span><TrendingUp size={14} /> 24h +2.45%</span>
+        </div>
+      </section>
 
-      {/* === Trade Controls === */}
-      <div className="trade-panel">
-        <input
-          type="number"
-          placeholder="Amount"
-          className="amount-input"
-          value={tradeAmount}
-          onChange={(e) => setTradeAmount(e.target.value)}
-        />
-        <select
-          className="duration-select"
-          value={tradeDuration}
-          onChange={(e) => setTradeDuration(Number(e.target.value))}
-        >
-          <option value="">Duration</option>
-          <option value={5}>5s</option>
-          <option value={10}>10s</option>
-          <option value={30}>30s</option>
-          <option value={60}>1m</option>
-          <option value={300}>5m</option>
-        </select>
+      <section className="demo-chart-card">
+        <div className="demo-chart-tabs" aria-label="Timeframes">
+          <span>1m</span>
+          <span className="active">5m</span>
+          <span>15m</span>
+          <span>1H</span>
+          <span>4H</span>
+          <span>1D</span>
+        </div>
+        <canvas ref={canvasRef} className="chart"></canvas>
+      </section>
 
-        <button onClick={() => placeTrade("BUY")} disabled={!!activeTrade}>
-          Buy
+      <section className="demo-ticket-card">
+        <div className="side-switch" role="tablist" aria-label="Trade side">
+          <button type="button" className={selectedSide === "BUY" ? "active buy" : ""} onClick={() => setSelectedSide("BUY")} disabled={!!activeTrade}>BUY</button>
+          <button type="button" className={selectedSide === "SELL" ? "active sell" : ""} onClick={() => setSelectedSide("SELL")} disabled={!!activeTrade}>SELL</button>
+        </div>
+
+        <div className="ticket-fields">
+          <label>
+            <span>Amount (USDT)</span>
+            <input
+              type="number"
+              placeholder="Amount"
+              className="amount-input"
+              value={tradeAmount}
+              onChange={(e) => setTradeAmount(e.target.value)}
+            />
+          </label>
+          <label>
+            <span>Duration</span>
+            <select
+              className="duration-select"
+              value={tradeDuration}
+              onChange={(e) => setTradeDuration(e.target.value)}
+            >
+              <option value="5">5 sec</option>
+              <option value="10">10 sec</option>
+              <option value="30">30 sec</option>
+              <option value="60">1 min</option>
+              <option value="300">5 min</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="quick-amounts">
+          {quickAmounts.map((amount) => (
+            <button key={amount} type="button" className={Number(tradeAmount) === amount ? "active" : ""} onClick={() => setTradeAmount(String(amount))} disabled={!!activeTrade}>
+              {amount.toLocaleString()}
+            </button>
+          ))}
+          <button type="button" onClick={() => setTradeAmount(String(Math.floor(Number(balance || 0))))} disabled={!!activeTrade}>MAX</button>
+        </div>
+
+        <button className={`execute-trade ${selectedSide.toLowerCase()}`} onClick={() => placeTrade(selectedSide)} disabled={!!activeTrade}>
+          Execute Trade ({selectedSide})
+          <ArrowUpRight size={18} />
         </button>
-        <button onClick={() => placeTrade("SELL")} disabled={!!activeTrade}>
-          Sell
-        </button>
+      </section>
 
-        {activeTrade && (
-          <span className="countdown">⏳ {countdown}s left</span>
-        )}
-      </div>
+      <section className="indicator-pill-row" aria-label="Indicators">
+        <button type="button" className={showEMA ? "active" : ""} onClick={() => setShowEMA(!showEMA)}><Activity size={16} /> EMA</button>
+        <button type="button" className={showRSI ? "active" : ""} onClick={() => setShowRSI(!showRSI)}><Waves size={16} /> RSI</button>
+        <button type="button" className={showVolume ? "active" : ""} onClick={() => setShowVolume(!showVolume)}><BarChart3 size={16} /> Volume</button>
+      </section>
 
-      {/* === Toggles === */}
-      <div className="toggle-panel">
-        <label>
-          <input
-            type="checkbox"
-            checked={showEMA}
-            onChange={() => setShowEMA(!showEMA)}
-          />
-          Show EMA
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={showRSI}
-            onChange={() => setShowRSI(!showRSI)}
-          />
-          Show RSI
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={showVolume}
-            onChange={() => setShowVolume(!showVolume)}
-          />
-          Show Volume
-        </label>
-      </div>
+      {activeTrade && (
+        <section className="open-trade-card">
+          <div className="open-trade-head">
+            <h3>Open Trade</h3>
+            <span className={activeTrade.type === "BUY" ? "trade-badge buy" : "trade-badge sell"}>{activeTrade.type}</span>
+          </div>
+          <strong className="open-symbol">BTC/USDT</strong>
+          <div className="open-trade-grid">
+            <div><span>Entry</span><strong>${activeTrade.entryPrice.toFixed(2)}</strong></div>
+            <div><span>Current</span><strong>${Number(latestPrice || activeTrade.entryPrice).toFixed(2)}</strong></div>
+            <div><span>PnL</span><strong className={activePnL >= 0 ? "profit" : "loss"}>{activePnL >= 0 ? "+" : ""}${activePnL.toFixed(2)}</strong></div>
+            <div><span>Time Left</span><strong><Timer size={14} /> {countdown ?? 0}s</strong></div>
+          </div>
+        </section>
+      )}
 
-      {/* === Trade History === */}
-      <div className="history">
-        <h3>Trade History</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Amount</th>
-              <th>Entry Price</th>
-              <th>Exit Price</th>
-              <th>Result</th>
-            </tr>
-          </thead>
-          <tbody>
-            {history.map((h, idx) => (
-              <tr key={idx}>
-                <td style={{ color: h.type === "BUY" ? "lime" : "red" }}>
-                  {h.type}
-                </td>
-                <td>${h.amount}</td>
-                <td>${h.entryPrice.toFixed(2)}</td>
-                <td>${h.exitPrice.toFixed(2)}</td>
-                <td style={{ color: h.result >= 0 ? "lime" : "red" }}>
-                  {h.result >= 0 ? "+" : ""}
-                  {h.result}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <section className="performance-card">
+        <div className="performance-head">
+          <h3>Performance</h3>
+          <button
+            type="button"
+            className="history-icon-btn"
+            onClick={() => setShowHistory(true)}
+            aria-label="Open trade history"
+            title="Trade history"
+          >
+            <GiNotebook aria-hidden="true" />
+          </button>
+        </div>
+        <div className="performance-grid">
+          <div><span>Starting Balance</span><strong>${startingBalance.toFixed(2)}</strong></div>
+          <div><span>Current Balance</span><strong>${Number(balance || 0).toFixed(2)}</strong></div>
+          <div><span>Profit / Loss</span><strong className={profitLoss >= 0 ? "profit" : "loss"}>{profitLoss >= 0 ? "+" : ""}${profitLoss.toFixed(2)} ({profitPercent.toFixed(2)}%)</strong></div>
+        </div>
+      </section>
+
+      {showHistory && (
+        <div className="history-modal-backdrop" role="presentation" onClick={() => setShowHistory(false)}>
+          <section
+            className="history-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="demo-trade-history-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="history-modal-head">
+              <div>
+                <span className="history-modal-kicker">Demo Trades</span>
+                <h3 id="demo-trade-history-title">Trade History</h3>
+              </div>
+              <button type="button" className="history-close-btn" onClick={() => setShowHistory(false)} aria-label="Close trade history">
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+
+            {history.length === 0 ? (
+              <p className="empty-history">No closed demo trades yet.</p>
+            ) : (
+              <div className="history-card-list">
+                {history.slice().reverse().map((h, idx) => (
+                  <article className="history-card" key={`${h.id}-${idx}`}>
+                    <div><strong>{h.type}</strong><span>${Number(h.amount || 0).toLocaleString()}</span></div>
+                    <div><span>Entry</span><strong>${Number(h.entryPrice || 0).toFixed(2)}</strong></div>
+                    <div><span>Exit</span><strong>${Number(h.exitPrice || 0).toFixed(2)}</strong></div>
+                    <div><span>Result</span><strong className={h.result >= 0 ? "profit" : "loss"}>{h.result >= 0 ? "+" : ""}${Number(h.result || 0).toLocaleString()}</strong></div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      )}
     </div>
   );
 }

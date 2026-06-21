@@ -1,12 +1,13 @@
 // src/pages/Register.jsx
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import api from "../utils/axiosInstance.js";
+import { useUser } from "../contexts/UserContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import CountrySelect from "../components/CountrySelect";
 import "../styles/Register.css";
 
 const Register = () => {
-  const { register } = useAuth();
+  const { setUser } = useUser();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -63,17 +64,32 @@ const Register = () => {
         referredBy: referredBy?.trim() ? referredBy.trim() : null,
       };
 
-      const result = await register(formData);
+      const res = await api.post("/api/auth/register", formData);
+      const token = res?.data?.token;
+      const registeredUser = res?.data?.user;
 
-      if (!result?.success) {
-        setError(result?.error || "Registration failed");
+      if (!token || !registeredUser) {
+        setError("Registration succeeded, but the server did not return a login session.");
         return;
       }
 
-      navigate("/dashboard");
+      localStorage.setItem("token", token);
+
+      let fullUser = registeredUser;
+      try {
+        const meRes = await api.get("/api/auth/me", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (meRes?.data) fullUser = meRes.data;
+      } catch (meErr) {
+        console.warn("Could not fetch /api/auth/me after registration:", meErr);
+      }
+
+      setUser({ ...fullUser, token });
+      navigate("/dashboard/profile");
     } catch (err) {
       console.error("❌ Register Error:", err);
-      setError("Registration failed");
+      setError(err?.response?.data?.message || err?.message || "Registration failed");
     } finally {
       setLoading(false);
     }

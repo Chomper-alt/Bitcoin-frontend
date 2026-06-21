@@ -1,19 +1,87 @@
-// src/dashboard/Settings.jsx
 import React, { useState } from "react";
+import {
+  FaCamera,
+  FaCheck,
+  FaLock,
+  FaMoon,
+  FaPalette,
+  FaPhoneAlt,
+  FaSignOutAlt,
+  FaSun,
+  FaUpload,
+  FaUserCircle,
+} from "react-icons/fa";
 import { useTheme } from "../contexts/ThemeContext";
 import { useUser } from "../contexts/UserContext";
 import "./Settings.css";
 import { toast } from "react-toastify";
-import api from "../utils/axiosInstance"; // ✅ uses HTTPS baseURL + token interceptor
+import api from "../utils/axiosInstance";
+import AppLoader from "../components/AppLoader";
 
-// Normalize any profile image to an absolute HTTPS URL
+
 const normalizeImageUrl = (val) => {
   if (!val) return null;
   if (val.startsWith("http://")) return val.replace("http://", "https://");
   if (val.startsWith("https://")) return val;
-  // backend serves uploads at /uploads/*
   if (val.startsWith("/uploads")) return `https://api.metaxtrader.com${val}`;
   return val;
+};
+
+
+const MOBILE_IMAGE_MAX_SIZE = 960;
+
+const fileToDataUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error || new Error("Could not read image file"));
+    reader.readAsDataURL(file);
+  });
+
+const loadImageFromDataUrl = (dataUrl) =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Could not prepare selected image"));
+    img.src = dataUrl;
+  });
+
+const prepareProfileImageForUpload = async (file) => {
+  if (!file) return null;
+
+  // Android/Capacitor gallery files can arrive as HEIC/WEBP or even blank mime types.
+  // The backend multer filter accepts JPEG/PNG, so normalize every selected image to JPEG.
+  const dataUrl = await fileToDataUrl(file);
+  const img = await loadImageFromDataUrl(dataUrl);
+
+  const scale = Math.min(1, MOBILE_IMAGE_MAX_SIZE / Math.max(img.width, img.height));
+  const width = Math.max(1, Math.round(img.width * scale));
+  const height = Math.max(1, Math.round(img.height * scale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, width, height);
+  ctx.drawImage(img, 0, 0, width, height);
+
+  const blob = await new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (result) => (result ? resolve(result) : reject(new Error("Could not convert image"))),
+      "image/jpeg",
+      0.88
+    );
+  });
+
+  return new File([blob], `profile-${Date.now()}.jpg`, { type: "image/jpeg" });
+};
+
+const addCacheBuster = (url) => {
+  if (!url || url.startsWith("data:") || url.startsWith("blob:")) return url;
+  const joiner = url.includes("?") ? "&" : "?";
+  return `${url}${joiner}v=${Date.now()}`;
 };
 
 const Settings = () => {
@@ -21,10 +89,9 @@ const Settings = () => {
   const { user, setUser, logout } = useUser();
   const token = localStorage.getItem("token");
 
-  // Local state
   const [profileFile, setProfileFile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(
-    normalizeImageUrl(user?.profileImage) || "/images/default-avatar.png" // ✅ served by frontend; no CORS
+    normalizeImageUrl(user?.profileImage) || "/images/default-avatar.png"
   );
 
   const [currentPassword, setCurrentPassword] = useState("");
@@ -32,13 +99,10 @@ const Settings = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const [phoneEmail, setPhoneEmail] = useState("");
-
   const [showForgot, setShowForgot] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  // ---------------- PROFILE IMAGE ----------------
   const handleProfileImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -49,37 +113,52 @@ const Settings = () => {
   const uploadProfileImage = async () => {
     if (!profileFile) return toast.error("Please choose a file first");
 
-    const formData = new FormData();
-    formData.append("photo", profileFile);
-
     try {
+      const uploadFile = await prepareProfileImageForUpload(profileFile);
+      if (!uploadFile) return toast.error("Please choose a valid image first");
+
+      const formData = new FormData();
+      formData.append("photo", uploadFile, uploadFile.name);
+
       const res = await api.patch("/api/users/settings/profile-image", formData, {
-        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` }, // extra safety
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      const img =
-        normalizeImageUrl(res?.data?.imageUrl) ||
-        normalizeImageUrl(res?.data?.profileImage) ||
-        normalizeImageUrl(res?.data?.url);
+      const payload = res?.data || {};
+      const uploadedImage =
+        normalizeImageUrl(payload?.imageUrl) ||
+        normalizeImageUrl(payload?.profileImage) ||
+        normalizeImageUrl(payload?.user?.profileImage) ||
+        normalizeImageUrl(payload?.data?.profileImage);
 
-      if (img) {
-        setUser((prev) => ({ ...prev, profileImage: img }));
-        setProfilePreview(img);
+      if (!uploadedImage) {
+        throw new Error("Upload completed but no profile image URL was returned");
       }
 
+      // Update the dashboard user state immediately from the upload response.
+      // Do not rely on /me here because the bug we are fixing is display/sync,
+      // not whether the backend stored the image. Mongo already stores profileImage.
+      setUser((prev) => ({
+        ...(prev || {}),
+        profileImage: uploadedImage,
+        imageUrl: uploadedImage,
+        avatar: uploadedImage,
+      }));
+
+      setProfilePreview(uploadedImage);
       toast.success("Profile picture updated!");
       setProfileFile(null);
     } catch (err) {
       console.error(err);
-      toast.error(err?.response?.data?.message || "Failed to upload profile image");
+      toast.error(err?.response?.data?.message || err?.response?.data?.msg || err?.message || "Failed to upload profile image");
     }
   };
 
-  // ---------------- CHANGE PASSWORD ----------------
   const handlePasswordChange = async (e) => {
     e.preventDefault();
-    if (newPassword !== confirmNewPassword)
+    if (newPassword !== confirmNewPassword) {
       return toast.error("New passwords do not match");
+    }
 
     try {
       await api.patch(
@@ -98,7 +177,6 @@ const Settings = () => {
     }
   };
 
-  // ---------------- PHONE REQUEST ----------------
   const handlePhoneChange = async (e) => {
     e.preventDefault();
 
@@ -117,7 +195,6 @@ const Settings = () => {
     }
   };
 
-  // ---------------- FORGOT PASSWORD ----------------
   const handleForgotPassword = async (e) => {
     e.preventDefault();
 
@@ -132,57 +209,113 @@ const Settings = () => {
     }
   };
 
-  // ---------------- THEME SWITCH ----------------
-  const handleThemeChange = async (e) => {
-    const newTheme = e.target.value;
+  const handleThemeChange = async (nextTheme) => {
+    if (!nextTheme || nextTheme === theme) return;
 
     try {
       await api.patch(
         "/api/users/settings/theme",
-        { theme: newTheme },
+        { theme: nextTheme },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toggleTheme(newTheme);
-      toast.success(`Theme updated to ${newTheme}`);
+      toggleTheme(nextTheme);
+      toast.success(`Theme updated to ${nextTheme}`);
     } catch (err) {
       console.error(err);
       toast.error(err?.response?.data?.message || "Failed to update theme");
     }
   };
 
-  // ---------------- LOGOUT ----------------
   const handleLogout = () => logout();
 
-  if (!user) return <div className="settings-page">Loading...</div>;
+  if (!user) return <AppLoader label="Loading settings..." compact />;
 
   return (
     <div className="settings-page">
-      <div className="settings-header">
-        <h2>Settings</h2>
+      <div className="settings-hero-card">
+        <div>
+          <span className="settings-eyebrow">Account Center</span>
+          <h2>Settings</h2>
+          <p>Manage your profile, security, theme, and account access.</p>
+        </div>
+        <div className="settings-hero-icon" aria-hidden="true">
+          <FaUserCircle />
+        </div>
       </div>
 
-      {/* PROFILE PICTURE */}
-      <div className="settings-section">
-        <h3>Profile Picture</h3>
+      <section className="settings-card profile-settings-card">
+        <div className="settings-card-head">
+          <span className="settings-card-icon"><FaCamera /></span>
+          <div>
+            <h3>Profile Picture</h3>
+            <p>Update your account avatar.</p>
+          </div>
+        </div>
+
         <div className="profile-image-preview">
           <img
             src={profilePreview || "/images/default-avatar.png"}
-            alt="Preview"
+            alt="Profile preview"
             onError={(e) => {
-              e.currentTarget.src = "/images/default-avatar.png"; // ✅ always safe, same-origin
+              e.currentTarget.src = "/images/default-avatar.png";
             }}
           />
 
-          <input type="file" accept="image/*" onChange={handleProfileImageChange} />
+          <div className="profile-upload-actions">
+            <label className="file-picker-btn">
+              <FaCamera />
+              <span>{profileFile ? "Photo selected" : "Choose Photo"}</span>
+              <input type="file" accept="image/*" onChange={handleProfileImageChange} />
+            </label>
+            <button type="button" className="settings-primary-btn" onClick={uploadProfileImage}>
+              <FaUpload /> Upload
+            </button>
+          </div>
         </div>
-        <button onClick={uploadProfileImage}>Upload New Picture</button>
-      </div>
+      </section>
 
-      {/* PHONE NUMBER */}
-      <div className="settings-section">
-        <h3>Change Phone Number</h3>
-        <form onSubmit={handlePhoneChange}>
+      <section className="settings-card theme-settings-card">
+        <div className="settings-card-head">
+          <span className="settings-card-icon"><FaPalette /></span>
+          <div>
+            <h3>Theme</h3>
+            <p>Switch the app appearance.</p>
+          </div>
+        </div>
+
+        <div className="theme-choice-grid" role="group" aria-label="Choose theme">
+          <button
+            type="button"
+            className={`theme-choice ${theme === "light" ? "active" : ""}`}
+            onClick={() => handleThemeChange("light")}
+          >
+            <FaSun />
+            <span>Light</span>
+            {theme === "light" && <FaCheck className="theme-check" />}
+          </button>
+          <button
+            type="button"
+            className={`theme-choice ${theme === "dark" ? "active" : ""}`}
+            onClick={() => handleThemeChange("dark")}
+          >
+            <FaMoon />
+            <span>Dark</span>
+            {theme === "dark" && <FaCheck className="theme-check" />}
+          </button>
+        </div>
+      </section>
+
+      <section className="settings-card">
+        <div className="settings-card-head">
+          <span className="settings-card-icon"><FaPhoneAlt /></span>
+          <div>
+            <h3>Phone Number</h3>
+            <p>Request a verified phone number change.</p>
+          </div>
+        </div>
+
+        <form className="settings-form" onSubmit={handlePhoneChange}>
           <label>Email Verification Required</label>
           <input
             type="email"
@@ -191,14 +324,20 @@ const Settings = () => {
             onChange={(e) => setPhoneEmail(e.target.value)}
             required
           />
-          <button type="submit">Request Change</button>
+          <button type="submit" className="settings-primary-btn">Request Change</button>
         </form>
-      </div>
+      </section>
 
-      {/* PASSWORD */}
-      <div className="settings-section">
-        <h3>Change Password</h3>
-        <form onSubmit={handlePasswordChange}>
+      <section className="settings-card">
+        <div className="settings-card-head">
+          <span className="settings-card-icon"><FaLock /></span>
+          <div>
+            <h3>Security</h3>
+            <p>Change your password or request a reset link.</p>
+          </div>
+        </div>
+
+        <form className="settings-form" onSubmit={handlePasswordChange}>
           <label>Current Password</label>
           <input
             type="password"
@@ -223,15 +362,19 @@ const Settings = () => {
             required
           />
 
-          <button type="submit">Update Password</button>
+          <button type="submit" className="settings-primary-btn">Update Password</button>
         </form>
 
-        <p className="forgot-password-link" onClick={() => setShowForgot(!showForgot)}>
+        <button
+          type="button"
+          className="forgot-password-link"
+          onClick={() => setShowForgot(!showForgot)}
+        >
           Forgot old password?
-        </p>
+        </button>
 
         {showForgot && (
-          <form onSubmit={handleForgotPassword}>
+          <form className="settings-form reset-form" onSubmit={handleForgotPassword}>
             <input
               type="email"
               placeholder="Enter your email"
@@ -239,49 +382,40 @@ const Settings = () => {
               onChange={(e) => setResetEmail(e.target.value)}
               required
             />
-            <button type="submit">Send Reset Link</button>
+            <button type="submit" className="settings-secondary-btn">Send Reset Link</button>
           </form>
         )}
-      </div>
+      </section>
 
-      {/* THEME SWITCH */}
-      <div className="settings-section">
-        <h3>Theme</h3>
-
-        <div className="theme-toggle">
-          <label>Choose Theme:</label>
-          <select value={theme} onChange={handleThemeChange}>
-            <option value="light">🌞 Light</option>
-            <option value="dark">🌙 Dark</option>
-          </select>
+      <section className="settings-card logout-section">
+        <div className="settings-card-head">
+          <span className="settings-card-icon danger"><FaSignOutAlt /></span>
+          <div>
+            <h3>Logout</h3>
+            <p>End your current session on this device.</p>
+          </div>
         </div>
-      </div>
-
-      {/* LOGOUT */}
-      <div className="settings-section logout-section">
-        <h3>Logout</h3>
 
         {showLogoutConfirm ? (
           <div className="logout-confirm">
-            <p>Are you sure?</p>
-
-            <button onClick={handleLogout} className="confirm-btn">
-              Yes, Logout
-            </button>
-
-            <button onClick={() => setShowLogoutConfirm(false)} className="cancel-btn">
-              Cancel
-            </button>
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-actions">
+              <button type="button" onClick={handleLogout} className="confirm-btn">
+                Yes, Logout
+              </button>
+              <button type="button" onClick={() => setShowLogoutConfirm(false)} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
           </div>
         ) : (
-          <button onClick={() => setShowLogoutConfirm(true)} className="logout-btn">
-            Logout
+          <button type="button" onClick={() => setShowLogoutConfirm(true)} className="logout-btn">
+            <FaSignOutAlt /> Logout
           </button>
         )}
-      </div>
+      </section>
     </div>
   );
 };
 
 export default Settings;
-

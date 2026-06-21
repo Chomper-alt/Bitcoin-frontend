@@ -14,7 +14,11 @@ export default function ForgotPassword() {
     setLoading(true);
     try {
       const res = await forgotPassword(email);
-      setMsg(res?.message || "If that email exists, we sent a reset link.");
+      setMsg(
+        res?.data?.message ||
+          res?.message ||
+          "If that email exists, we sent a reset link."
+      );
     } catch (err) {
       setMsg(err?.response?.data?.message || "Error sending reset email");
     } finally {

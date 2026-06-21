@@ -1,12 +1,12 @@
 .about-us {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(90deg, #1a1a1a, #111);
-  color: #fff;
+  background: var(--bg-gradient);
+  color: var(--text-primary);
   font-family: Arial, sans-serif;
   padding: 40px 20px;
   box-sizing: border-box;
-  overflow-x: hidden; /* prevent horizontal scrolling */
+  overflow-x: hidden;
 }
 
 .about-hero {
@@ -17,22 +17,30 @@
 .about-hero h1 {
   font-size: 3rem;
   margin-bottom: 20px;
+  color: var(--text-primary);
 }
 
 .about-hero p {
   font-size: 1.2rem;
   max-width: 800px;
   margin: 0 auto;
+  color: var(--text-primary);
+}
+
+.about-section,
+.journey,
+.about-cta {
+  max-width: 900px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #4f46e5, #22d3ee);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px var(--shadow-color);
 }
 
 .about-section {
-  max-width: 900px;
   margin: 40px auto;
   padding: 30px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 .about-section h2 {
@@ -57,15 +65,9 @@
   margin: 10px 0;
 }
 
-/* OUR JOURNEY SECTION */
 .journey {
-  max-width: 900px;
   margin: 50px auto;
   padding: 30px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 .journey h2 {
@@ -106,16 +108,10 @@
   line-height: 1.5;
 }
 
-/* CTA SECTION */
 .about-cta {
   text-align: center;
-  max-width: 900px;
   margin: 60px auto;
   padding: 40px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
 }
 
 .about-cta h2 {
@@ -137,7 +133,7 @@
 
 .btn {
   padding: 12px 28px;
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 1rem;
   font-weight: bold;
   text-decoration: none;
@@ -156,9 +152,103 @@
 .secondary-btn {
   background: rgba(255, 255, 255, 0.15);
   color: #fff;
-  border: 2px solid #fff;
+  border: 2px solid rgba(255, 255, 255, 0.72);
 }
 
 .secondary-btn:hover {
   background: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 768px) {
+  .about-us {
+    min-height: auto;
+    padding: 28px 14px 24px;
+  }
+
+  .about-hero {
+    margin-bottom: 26px;
+  }
+
+  .about-hero h1 {
+    font-size: clamp(1.8rem, 8vw, 2.3rem);
+  }
+
+  .about-hero p {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .about-section,
+  .journey,
+  .about-cta {
+    width: 100%;
+    margin: 24px auto;
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+
+  .about-section h2,
+  .journey h2,
+  .about-cta h2 {
+    font-size: clamp(1.45rem, 7vw, 1.9rem);
+  }
+
+  .timeline {
+    padding-left: 16px;
+    gap: 20px;
+  }
+
+  .timeline-item {
+    padding-left: 16px;
+  }
+
+  .about-cta {
+    margin-bottom: 0;
+  }
+}
+
+
+/* =========================================================
+   ABOUT PAGE FINAL THEME OVERRIDES
+   ========================================================= */
+.about-us {
+  background: var(--bg-gradient) !important;
+  color: var(--text-primary) !important;
+}
+
+.about-hero h1,
+.about-hero p {
+  color: var(--text-primary) !important;
+}
+
+.about-section,
+.about-cta {
+  background: linear-gradient(135deg, #4f46e5, #22d3ee) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+.journey {
+  background:
+    radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 32%),
+    color-mix(in srgb, var(--card-bg-strong) 82%, transparent) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+}
+
+.journey h2 {
+  color: var(--text-primary) !important;
+}
+
+.timeline {
+  border-left-color: var(--accent) !important;
+}
+
+.timeline-year,
+.timeline-item::before {
+  color: var(--accent) !important;
+}
+
+.timeline-desc {
+  color: var(--text-secondary) !important;
 }

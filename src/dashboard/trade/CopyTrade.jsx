@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import api from "../../utils/axiosInstance.js";
+import { FaChartLine, FaSignal, FaWallet } from "react-icons/fa";
 import "./CopyTrade.css";
 
 export default function CopyTrading() {
@@ -117,16 +118,23 @@ export default function CopyTrading() {
 
   return (
     <div className="copy-trading">
-     <h2>Copy Trading</h2>
-<p className="wallet-balance">
-  Wallet Balance: ${formatCurrency(walletBalance)}
-</p>
+     <div className="copy-trade-head">
+        <div className="copy-trade-title">
+          <FaChartLine aria-hidden="true" />
+          <h2>Copy Trading</h2>
+        </div>
+        <p className="wallet-balance">
+          <FaWallet aria-hidden="true" />
+          Wallet Balance: ${formatCurrency(walletBalance)}
+        </p>
+      </div>
 
 <div className="signal-action">
   <button
     className="request-signal-btn"
     onClick={() => (window.location.href = "/dashboard/request-signal")}
   >
+    <FaSignal aria-hidden="true" />
     Request Signal Code
   </button>
 </div>
@@ -161,7 +169,7 @@ export default function CopyTrading() {
       {/* Active Trade */}
       {activeTrade && (
         <div className={`active-trade ${isTradeDue ? "ready-complete" : ""}`}>
-          <h3>📊 Active Trade</h3>
+          <h3><FaChartLine aria-hidden="true" /> Active Trade</h3>
           <p><strong>Level:</strong> {activeTrade.level}</p>
           <p><strong>Capital:</strong> ${formatCurrency(activeTrade.capital)}</p>
           <p><strong>Expected Profit:</strong> {activeTrade.expectedProfitPct}%</p>
@@ -182,8 +190,8 @@ export default function CopyTrading() {
       )}
 
       {/* Trade History */}
-      <h3>My Trades</h3>
-      <table>
+      <h3 className="copy-history-title">My Trades</h3>
+      <table className="copy-trades-table">
         <thead>
           <tr>
             <th>Level</th>
@@ -205,6 +213,33 @@ export default function CopyTrading() {
           ))}
         </tbody>
       </table>
+
+      <div className="copy-trades-mobile-list">
+        {trades.length === 0 ? (
+          <div className="copy-mobile-empty">No copy trades yet.</div>
+        ) : (
+          trades.map((t) => (
+            <article key={t._id} className={`copy-mobile-trade ${t.status === "completed" ? "completed" : ""}`}>
+              <div>
+                <span>Level</span>
+                <strong>{t.level}</strong>
+              </div>
+              <div>
+                <span>Capital</span>
+                <strong>${formatCurrency(t.capital)}</strong>
+              </div>
+              <div>
+                <span>Status</span>
+                <strong>{t.status}</strong>
+              </div>
+              <div>
+                <span>Net Payout</span>
+                <strong className={t.netPayout > 0 ? "profit" : ""}>${formatCurrency(t.netPayout)}</strong>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
     </div>
   );
 }

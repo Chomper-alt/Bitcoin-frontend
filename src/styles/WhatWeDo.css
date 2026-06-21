@@ -104,3 +104,36 @@
   height: 40px;
   margin-bottom: 1rem;
 }
+
+/* Match the Platform Features colorful card identity. */
+.what-card:nth-child(1) {
+  background: linear-gradient(135deg, #00d4ff, #0077ff);
+}
+
+.what-card:nth-child(2) {
+  background: linear-gradient(135deg, #ff8a00, #e52e71);
+}
+
+.what-card:nth-child(3) {
+  background: linear-gradient(135deg, #42e695, #3bb2b8);
+}
+
+.what-card:nth-child(4) {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+.what-card,
+.what-card h3,
+.what-card p,
+.what-card .what-icon {
+  color: #ffffff;
+}
+
+.what-card {
+  border: 0;
+  transform: none !important;
+}
+
+.what-card:hover {
+  transform: none !important;
+}

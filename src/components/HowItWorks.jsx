@@ -9,7 +9,16 @@ export default function HowItWorks() {
       <div className="how-container">
         {/* Left - Video */}
         <div className="how-video">
-          <video src="/videos/investor.mp4" controls />
+          <video
+            src="/videos/investor.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="how-video-box"
+            aria-label="How Meta X Broker works"
+            onContextMenu={(event) => event.preventDefault()}
+          />
         </div>
 
         {/* Right - Text */}

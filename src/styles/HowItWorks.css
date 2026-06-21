@@ -30,6 +30,11 @@
   display: block;
 }
 
+.how-video-box {
+  pointer-events: none;
+  user-select: none;
+}
+
 /* Right - Text */
 .how-text {
   flex: 1;

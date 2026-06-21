@@ -1,0 +1,145 @@
+/* =========================================================
+   META X HOME — FULL BODY FLOWING CONNECTED-LINE BACKGROUND
+   Applies to website + mobile app. Header and footer/bottom nav sit outside.
+   ========================================================= */
+.home-page-flow {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(0, 212, 255, 0.16), transparent 28%),
+    radial-gradient(circle at 86% 34%, rgba(15, 118, 255, 0.14), transparent 30%),
+    linear-gradient(160deg, #0a0f1e, #020611 72%);
+  color: #fff;
+}
+
+.home-flow-particles {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0 !important;
+  pointer-events: none;
+}
+
+.home-flow-particles canvas,
+#home-flow-particles canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.home-page-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Let the shared Home background flow through every Home section. */
+.home-page-flow .hero-section,
+.home-page-flow .features-section,
+.home-page-flow .how-it-works,
+.home-page-flow .what-we-do-section,
+.home-page-flow .community-section,
+.home-page-flow .join-community,
+.home-page-flow .sponsored-section {
+  background: transparent !important;
+}
+
+/* Add subtle section separation without breaking the flowing background. */
+.home-page-flow .features-section,
+.home-page-flow .how-it-works,
+.home-page-flow .what-we-do-section,
+.home-page-flow .community-section,
+.home-page-flow .join-community,
+.home-page-flow .sponsored-section {
+  position: relative;
+  z-index: 1;
+}
+
+.home-page-flow .features-section::before,
+.home-page-flow .how-it-works::before,
+.home-page-flow .what-we-do-section::before,
+.home-page-flow .community-section::before,
+.home-page-flow .sponsored-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(5, 11, 24, 0.12), rgba(5, 11, 24, 0.34));
+}
+
+@media (max-width: 768px) {
+  body.cap-native.app-public-page .home-page-flow {
+    min-height: calc(100dvh - 72px - 92px);
+  }
+
+  body.cap-native.app-public-page .home-flow-particles {
+    top: 0 !important;
+    bottom: 0 !important;
+  }
+}
+
+/* =========================================================
+   HOME THEME RESTORE — website + mobile app
+   The full-body connected-line background must follow the selected theme.
+   ========================================================= */
+:root[data-theme="dark"] .home-page-flow {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(0, 212, 255, 0.16), transparent 28%),
+    radial-gradient(circle at 86% 34%, rgba(15, 118, 255, 0.14), transparent 30%),
+    linear-gradient(160deg, #0a0f1e, #020611 72%) !important;
+  color: var(--text-primary) !important;
+}
+
+:root[data-theme="light"] .home-page-flow {
+  background:
+    radial-gradient(circle at 14% 8%, rgba(20, 184, 166, 0.20), transparent 28%),
+    radial-gradient(circle at 82% 30%, rgba(45, 212, 191, 0.16), transparent 32%),
+    linear-gradient(160deg, #ffffff 0%, #effefd 48%, #f8ffff 100%) !important;
+  color: var(--text-primary) !important;
+}
+
+:root[data-theme="light"] .home-page-flow .features-section::before,
+:root[data-theme="light"] .home-page-flow .how-it-works::before,
+:root[data-theme="light"] .home-page-flow .what-we-do-section::before,
+:root[data-theme="light"] .home-page-flow .community-section::before,
+:root[data-theme="light"] .home-page-flow .sponsored-section::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(236, 254, 255, 0.38)) !important;
+}
+
+:root[data-theme="dark"] .home-page-flow .features-section::before,
+:root[data-theme="dark"] .home-page-flow .how-it-works::before,
+:root[data-theme="dark"] .home-page-flow .what-we-do-section::before,
+:root[data-theme="dark"] .home-page-flow .community-section::before,
+:root[data-theme="dark"] .home-page-flow .sponsored-section::before {
+  background: linear-gradient(180deg, rgba(5, 11, 24, 0.12), rgba(5, 11, 24, 0.34)) !important;
+}
+
+:root[data-theme="light"] .home-page-flow h1,
+:root[data-theme="light"] .home-page-flow h2,
+:root[data-theme="light"] .home-page-flow h3,
+:root[data-theme="light"] .home-page-flow p,
+:root[data-theme="light"] .home-page-flow li,
+:root[data-theme="light"] .home-page-flow span:not(.gradient-text) {
+  color: inherit;
+}
+
+:root[data-theme="light"] .home-page-flow .hero-text h1,
+:root[data-theme="light"] .home-page-flow .features-title,
+:root[data-theme="light"] .home-page-flow .how-text h2,
+:root[data-theme="light"] .home-page-flow .what-we-do-title,
+:root[data-theme="light"] .home-page-flow .community-text h2,
+:root[data-theme="light"] .home-page-flow .sponsored-title {
+  color: var(--text-primary) !important;
+  text-shadow: none !important;
+}
+
+:root[data-theme="light"] .home-page-flow .hero-text p,
+:root[data-theme="light"] .home-page-flow .how-text p,
+:root[data-theme="light"] .home-page-flow .community-text p,
+:root[data-theme="light"] .home-page-flow .what-we-do-description,
+:root[data-theme="light"] .home-page-flow .feature-desc {
+  color: var(--text-secondary) !important;
+}

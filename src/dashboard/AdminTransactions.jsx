@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/axiosInstance.js";
 import "./AdminTransactions.css";
+import AppLoader from "../components/AppLoader";
 
 const AdminTransactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -47,7 +48,7 @@ const AdminTransactions = () => {
     }
   };
 
-  if (loading) return <div className="admin-transactions">Loading...</div>;
+  if (loading) return <AppLoader label="Loading admin transactions..." compact />;
   if (error) return <div className="admin-transactions">{error}</div>;
 
   return (

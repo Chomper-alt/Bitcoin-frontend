@@ -1,39 +1,80 @@
-/* Gradient background */
+/* =========================================================
+   MetaTraderX — Our Journey timeline
+   Theme-aware for website + native app
+   ========================================================= */
 .journey-page {
-  min-height: 100vh;
-  background: linear-gradient(90deg, #1a1a1a, #111);
-  color: #fff;
-  padding: 60px 20px;
+  width: 100%;
+  min-height: auto;
+  margin: 48px auto;
+  padding: 56px 20px;
   overflow-x: hidden;
-  font-family: "Poppins", sans-serif;
+  color: var(--text-primary);
+  font-family: "Poppins", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 32%),
+    color-mix(in srgb, var(--card-bg-strong) 82%, transparent);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 18px 46px var(--shadow-color);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
-/* Hero Section */
+:root[data-theme="light"] .journey-page {
+  background:
+    radial-gradient(circle at 12% 4%, rgba(20, 184, 166, 0.14), transparent 34%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(236, 254, 255, 0.82));
+}
+
+:root[data-theme="dark"] .journey-page {
+  background:
+    radial-gradient(circle at 12% 4%, rgba(34, 211, 238, 0.14), transparent 32%),
+    linear-gradient(160deg, rgba(5, 11, 24, 0.90), rgba(2, 6, 17, 0.94));
+}
+
 .journey-hero {
+  max-width: 760px;
+  margin: 0 auto 56px;
   text-align: center;
-  margin-bottom: 60px;
 }
 
 .journey-hero h1 {
-  font-size: 2.8rem;
-  margin-bottom: 15px;
+  margin: 0 0 14px;
+  color: var(--text-primary);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1.1;
 }
 
 .journey-hero p {
-  font-size: 1.2rem;
-  opacity: 0.9;
+  margin: 0 auto;
+  color: var(--text-secondary);
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  line-height: 1.55;
 }
 
-/* Timeline Layout */
 .journey-timeline {
   position: relative;
-  margin: 0 auto;
-  padding: 20px 0;
   max-width: 1000px;
+  margin: 0 auto;
+  padding: 12px 0;
+}
+
+.journey-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  transform: translateX(-50%);
+  z-index: 0;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .timeline-item {
   position: relative;
+  z-index: 1;
   width: 50%;
   padding: 20px;
 }
@@ -45,52 +86,111 @@
 
 .timeline-item.right {
   left: 50%;
+  text-align: left;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid color-mix(in srgb, var(--bg-color) 88%, white);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent);
+  transform: translateY(-50%);
+}
+
+.timeline-item.left::before {
+  right: -8px;
+}
+
+.timeline-item.right::before {
+  left: -8px;
 }
 
 .timeline-content {
   position: relative;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  border-radius: 22px;
+  box-shadow: 0 16px 34px var(--shadow-color);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Frosted Glass */
 .glass-effect {
   background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #ffffff;
 }
 
-/* Timeline Year */
 .timeline-year {
   display: block;
-  font-size: 1.5rem;
-  font-weight: bold;
   margin-bottom: 10px;
-  color: #00ff9d;
+  color: #28ffb8;
+  font-size: clamp(1.4rem, 4vw, 1.7rem);
+  font-weight: 900;
 }
 
-/* Connect Line */
-.journey-timeline::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(135deg, #4f46e5, #22d3ee);
-  transform: translateX(-50%);
-  z-index: 0;
+.timeline-content h3 {
+  margin: 0 0 12px;
+  color: #ffffff;
+  font-size: 1.15rem;
 }
 
-/* Responsive */
+.timeline-content p,
+.timeline-desc {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
 @media (max-width: 768px) {
-  .timeline-item {
+  .journey-page {
+    width: calc(100% - 28px);
+    margin: 24px auto;
+    padding: 32px 14px;
+    border-radius: 24px;
+  }
+
+  .journey-hero {
+    margin-bottom: 34px;
+  }
+
+  .journey-hero h1 {
+    font-size: clamp(1.8rem, 8vw, 2.25rem);
+  }
+
+  .journey-timeline {
+    padding: 8px 0 0;
+  }
+
+  .journey-timeline::before {
+    left: 18px;
+    transform: none;
+  }
+
+  .timeline-item,
+  .timeline-item.left,
+  .timeline-item.right {
     width: 100%;
-    text-align: center !important;
     left: 0 !important;
-    margin-bottom: 30px;
+    padding: 0 0 24px 44px;
+    text-align: center !important;
+  }
+
+  .timeline-item::before,
+  .timeline-item.left::before,
+  .timeline-item.right::before {
+    left: 10px;
+    right: auto;
+    top: 46%;
+  }
+
+  .timeline-content {
+    padding: 22px 18px;
+    border-radius: 20px;
   }
 }
-

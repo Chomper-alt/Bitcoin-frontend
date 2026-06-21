@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./UserProfile.css";
 import { useUser } from "../contexts/UserContext";
-import { normalizeImageUrl } from "../utils/normalizeImageUrl"; // ✅ IMPORTANT
+import { getUserAvatarUrl } from "../utils/normalizeImageUrl";
+import AppLoader from "../components/AppLoader";
 
 const vipNames = [
   "Beginner",
@@ -17,14 +18,31 @@ const vipNames = [
 
 const UserProfile = () => {
   const { user, loading } = useUser();
+  const [avatarFailed, setAvatarFailed] = useState(false);
 
-  if (loading) return <div className="user-profile">Loading...</div>;
+  useEffect(() => {
+    setAvatarFailed(false);
+  }, [user?.profileImage, user?.imageUrl, user?.profilePicture, user?.avatar]);
+
+  const profileImage = useMemo(() => {
+    if (avatarFailed) return "/images/default-avatar.png";
+
+    // UserContext is source of truth, but keep a localStorage fallback so a
+    // freshly uploaded avatar survives route changes before the next /me refresh.
+    let storedUser = null;
+    try {
+      storedUser = JSON.parse(localStorage.getItem("userInfo") || "null");
+    } catch {
+      storedUser = null;
+    }
+
+    return getUserAvatarUrl(user) || getUserAvatarUrl(storedUser) || "/images/default-avatar.png";
+  }, [user, avatarFailed]);
+
+  if (loading) return <AppLoader label="Loading profile..." compact />;
   if (!user) return <div className="user-profile">No user data found.</div>;
 
   const vipName = vipNames[user.vipLevelNumber ?? 0];
-
-  const profileImage =
-    normalizeImageUrl(user.profileImage) || "/images/default-avatar.png";
 
   return (
     <div className="user-profile">
@@ -38,6 +56,8 @@ const UserProfile = () => {
             alt="Profile"
             className="profile-avatar"
             onError={(e) => {
+              if (e.currentTarget.src.includes("default-avatar")) return;
+              setAvatarFailed(true);
               e.currentTarget.src = "/images/default-avatar.png";
             }}
           />
@@ -86,5 +106,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-
-

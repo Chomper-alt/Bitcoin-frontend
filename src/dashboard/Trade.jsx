@@ -1,6 +1,7 @@
 // src/dashboard/Trade.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FaChartLine, FaFlask, FaWallet } from "react-icons/fa";
 import "./Trade.css";
 
 const Trade = () => {
@@ -11,19 +12,19 @@ const Trade = () => {
       title: "Demo Trading",
       description: "Practice with your demo balance. No real funds are used.",
       route: "/dashboard/trade/demo",
-      icon: "🧪",
+      Icon: FaFlask,
     },
     {
       title: "Live Trading",
       description: "Trade with your real wallet balance for actual profits.",
       route: "/dashboard/trade/live",
-      icon: "💰",
+      Icon: FaWallet,
     },
     {
       title: "Copy Trading",
       description: "Automatically copy the admin’s trades and earn with them.",
       route: "/dashboard/trade/copy",
-      icon: "📊",
+      Icon: FaChartLine,
     },
   ];
 
@@ -31,17 +32,23 @@ const Trade = () => {
     <div className="trade-landing">
       <h2 className="trade-title">Choose Your Trading Mode</h2>
       <div className="trade-options">
-        {options.map((opt, index) => (
-          <div
-            key={index}
+        {options.map(({ title, description, route, Icon }) => (
+          <button
+            key={route}
+            type="button"
             className="trade-card"
-            onClick={() => navigate(opt.route)}
+            onClick={() => navigate(route)}
+            aria-label={`Open ${title}`}
           >
-            <div className="trade-icon">{opt.icon}</div>
-            <h3>{opt.title}</h3>
-            <p>{opt.description}</p>
-            <button className="trade-btn">Enter</button>
-          </div>
+            <span className="trade-icon" aria-hidden="true">
+              <Icon />
+            </span>
+            <span className="trade-card-copy">
+              <h3>{title}</h3>
+              <p>{description}</p>
+            </span>
+            <span className="trade-btn">Enter</span>
+          </button>
         ))}
       </div>
     </div>

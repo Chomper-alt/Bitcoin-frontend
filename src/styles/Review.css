@@ -1,9 +1,9 @@
-/* src/styles/Reviews.css */
+/* src/styles/Review.css */
 .reviews-page {
   max-width: 1100px;
   margin: 40px auto;
   padding: 0 20px 80px;
-  color: #e6eef6;
+  color: var(--text-primary);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
@@ -11,10 +11,9 @@
   text-align: center;
   font-size: 2rem;
   margin-bottom: 18px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
-/* Top-center overall card */
 .overall-wrap {
   display: flex;
   justify-content: center;
@@ -22,44 +21,53 @@
 }
 
 .overall-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 18px 20px;
-  border-radius: 12px;
   width: 780px;
+  padding: 18px 20px;
+  border-radius: 16px;
   display: flex;
   gap: 20px;
   align-items: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  background: var(--card-bg-strong);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 12px 30px var(--shadow-color);
+  color: var(--text-primary);
 }
 
-/* average block */
 .avg-block {
   width: 160px;
   text-align: center;
   padding-right: 12px;
-  border-right: 1px solid rgba(255,255,255,0.03);
+  border-right: 1px solid var(--border-color);
 }
 
 .avg-number {
   font-size: 40px;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-primary);
+}
+
+.avg-stars .star,
+.stars .star {
+  color: #ffd166;
 }
 
 .avg-stars .star {
-  color: #ffd166;
   font-size: 18px;
   margin-right: 2px;
 }
 
+.avg-votes,
+.pct,
+.rating-num,
+.meta {
+  color: var(--text-secondary);
+}
+
 .avg-votes {
   font-size: 13px;
-  color: #c9d6e2;
   margin-top: 6px;
 }
 
-/* distribution */
 .distribution {
   flex: 1;
   padding-left: 18px;
@@ -74,32 +82,30 @@
 
 .star-label {
   width: 40px;
-  color: #e6eef6;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .bar {
-  background: rgba(255,255,255,0.06);
   flex: 1;
   height: 10px;
   border-radius: 8px;
   overflow: hidden;
+  background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
 }
 
 .bar-fill {
-  background: linear-gradient(90deg, #60a5fa, #06b6d4);
   height: 100%;
   border-radius: 8px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
 }
 
 .pct {
   width: 44px;
   text-align: right;
-  color: #c9d6e2;
   font-size: 13px;
 }
 
-/* Reviews list */
 .list-wrap {
   margin-top: 18px;
   display: grid;
@@ -107,21 +113,22 @@
   gap: 14px;
 }
 
-/* individual card */
 .review-card {
   display: flex;
   gap: 18px;
   align-items: flex-start;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,255,255,0.03);
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  box-shadow: 0 10px 26px var(--shadow-color);
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .review-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+  box-shadow: 0 16px 38px var(--shadow-color);
 }
 
 .left {
@@ -133,8 +140,8 @@
   height: 68px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.06);
-  box-shadow: 0 6px 18px rgba(15,23,42,0.5);
+  border: 2px solid var(--border-color);
+  box-shadow: 0 6px 18px var(--shadow-color);
 }
 
 .right {
@@ -152,12 +159,11 @@
 .name {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .meta {
   font-size: 0.85rem;
-  color: #b9c6d3;
   display: flex;
   gap: 12px;
 }
@@ -170,54 +176,52 @@
 }
 
 .stars .star {
-  color: #ffd166;
   font-size: 16px;
 }
 
 .stars .star.empty {
-  color: rgba(255,255,255,0.18);
+  color: color-mix(in srgb, var(--text-secondary) 32%, transparent);
 }
 
 .rating-num {
-  color: #c9d6e2;
   font-weight: 600;
 }
 
 .comment {
-  color: #dbe7f2;
+  color: var(--text-secondary);
   line-height: 1.5;
   margin: 6px 0;
 }
 
 .read-toggle {
-  background: transparent;
+  padding: 6px 0;
   border: none;
-  color: #8fd3ff;
+  background: transparent;
+  color: var(--accent);
   cursor: pointer;
   font-weight: 600;
-  padding: 6px 0;
 }
 
 .read-toggle:hover {
   text-decoration: underline;
 }
 
-/* pagination */
 .pagination {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-top: 18px;
   align-items: center;
+  color: var(--text-secondary);
 }
 
 .pagination button {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.04);
-  color: #e6eef6;
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
 }
 
 .pagination button:disabled {
@@ -225,34 +229,65 @@
   cursor: not-allowed;
 }
 
-.pagination span {
-  color: #c9d6e2;
-}
+@media (max-width: 768px) {
+  .reviews-page {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 22px 14px 24px;
+  }
 
-/* responsive */
-@media (max-width: 900px) {
+  .reviews-page h1 {
+    font-size: clamp(1.7rem, 8vw, 2.2rem);
+    margin-bottom: 18px;
+  }
+
   .overall-card {
     width: 100%;
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    gap: 14px;
+    padding: 18px 14px;
   }
+
   .avg-block {
-    border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    width: 100%;
+    padding-right: 0;
     padding-bottom: 12px;
-    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-color);
   }
+
   .distribution {
-    padding-left: 0;
     width: 100%;
+    padding-left: 0;
   }
 
   .review-card {
-    flex-direction: row;
+    gap: 12px;
+    padding: 12px;
   }
+
   .left {
-    flex: 0 0 56px;
+    flex: 0 0 54px;
   }
-  .avatar { width: 56px; height: 56px; }
+
+  .avatar {
+    width: 54px;
+    height: 54px;
+  }
+
+  .rhead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .meta {
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.78rem;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
 }

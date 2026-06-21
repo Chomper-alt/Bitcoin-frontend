@@ -1,49 +1,134 @@
-/* ROOT THEME VARIABLES */
-:root {
-  --bg-color: #0d0d0d;
-  --text-color: #ffffff;
-  --card-bg: #111111;
-  --border-color: #333;
-  --accent: #4da3ff;
+/* =========================================================
+   META X BROKER GLOBAL THEME SYSTEM
+   Dark: black + blue gradient
+   Light: white + teal
+   ========================================================= */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-color: #050b18;
+  --bg-primary: #050b18;
+  --bg-secondary: #081425;
+  --bg-gradient: radial-gradient(circle at 18% 0%, rgba(0, 200, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 82% 10%, rgba(32, 83, 255, 0.18), transparent 35%),
+    linear-gradient(135deg, #020617 0%, #071426 48%, #030712 100%);
+  --text-color: #f7fbff;
+  --text-primary: #f7fbff;
+  --text-secondary: #9fb2ca;
+  --muted-text: #9fb2ca;
+  --card-bg: rgba(9, 18, 39, 0.82);
+  --card-bg-strong: rgba(13, 26, 55, 0.96);
+  --panel-bg: rgba(9, 18, 39, 0.78);
+  --border-color: rgba(34, 211, 238, 0.18);
+  --input-bg: rgba(255, 255, 255, 0.08);
+  --input-border: rgba(255, 255, 255, 0.14);
+  --accent: #22d3ee;
+  --accent-2: #2563eb;
+  --accent-soft: rgba(34, 211, 238, 0.14);
+  --button-text: #03101d;
+  --shadow-color: rgba(0, 0, 0, 0.38);
+  --danger: #ff6b6b;
+  --success: #22c55e;
 }
 
-/* LIGHT MODE */
-[data-theme="light"] {
-  --bg-color: #ffffff;
-  --text-color: #1a1a1a;
-  --card-bg: #f5f5f5;
-  --border-color: #d0d0d0;
-  --accent: #0066ff;
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-color: #f8ffff;
+  --bg-primary: #f8ffff;
+  --bg-secondary: #ecfeff;
+  --bg-gradient: radial-gradient(circle at 16% 0%, rgba(20, 184, 166, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 10%, rgba(45, 212, 191, 0.14), transparent 38%),
+    linear-gradient(135deg, #ffffff 0%, #effefd 50%, #f7fbff 100%);
+  --text-color: #082f36;
+  --text-primary: #082f36;
+  --text-secondary: #4b6470;
+  --muted-text: #4b6470;
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --card-bg-strong: rgba(255, 255, 255, 0.96);
+  --panel-bg: rgba(255, 255, 255, 0.86);
+  --border-color: rgba(13, 148, 136, 0.22);
+  --input-bg: rgba(255, 255, 255, 0.96);
+  --input-border: rgba(13, 148, 136, 0.26);
+  --accent: #0d9488;
+  --accent-2: #14b8a6;
+  --accent-soft: rgba(13, 148, 136, 0.12);
+  --button-text: #ffffff;
+  --shadow-color: rgba(15, 118, 110, 0.14);
+  --danger: #dc2626;
+  --success: #16a34a;
 }
 
-/* Apply globally */
-body {
+html,
+body,
+#root {
   background: var(--bg-color);
-  color: var(--text-color);
+  color: var(--text-primary);
 }
 
-/* Every card UI */
+body {
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
 .card,
+.wallet-card,
+.trade-card,
+.vip-card,
 .settings-card,
-.vip-dashboard,
+.settings-section,
+.profile-card,
+.balance-box,
+.wallet-balance-card,
+.transaction-card,
+.referral-card,
+.deposit-card,
+.withdraw-card,
 .table-wrapper,
 .sidebar,
-.navbar {
+.navbar,
+.form-card,
+.auth-form,
+.register-form {
   background: var(--card-bg) !important;
   border-color: var(--border-color) !important;
-  color: var(--text-color) !important;
+  color: var(--text-primary) !important;
 }
 
-/* Buttons */
-button {
-  color: var(--text-color) !important;
-  border-color: var(--border-color) !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+span,
+li,
+div {
+  border-color: var(--border-color);
 }
 
-/* Inputs */
 input,
-select {
-  background: var(--card-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+select,
+textarea {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--input-border) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in srgb, var(--text-secondary) 78%, transparent);
+}
+
+button,
+.btn,
+.nav-btn,
+.trade-btn,
+.deposit-btn,
+.withdraw-btn {
+  border-color: var(--border-color);
+}
+
+a {
+  color: var(--accent);
 }

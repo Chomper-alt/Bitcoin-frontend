@@ -42,6 +42,7 @@ import AdminSignals from "./admin/AdminSignals";
 import AdminSignalRequests from "./admin/AdminSignalRequest";
 
 import AppLoader from "./components/AppLoader";
+import MobileAppBridge from "./mobile/MobileAppBridge";
 import MainLayout from "./components/MainLayout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -55,10 +56,11 @@ function App() {
     user ? children : <Navigate to="/login" replace />;
 
   const RequireAdmin = ({ children }) =>
-    user?.isAdmin ? children : <Navigate to="/dashboard" replace />;
+    user?.isAdmin ? children : <Navigate to="/dashboard/profile" replace />;
 
   return (
     <>
+      <MobileAppBridge />
       <Routes>
         {/* PUBLIC ROUTES WITH PERSISTENT NAVBAR */}
         <Route element={<MainLayout />}>
@@ -91,6 +93,7 @@ function App() {
             </RequireUser>
           }
         >
+          <Route index element={<Navigate to="profile" replace />} />
           <Route path="profile" element={<Profile />} />
           <Route path="vip" element={<VIP />} />
           <Route path="wallet" element={<Wallet />} />

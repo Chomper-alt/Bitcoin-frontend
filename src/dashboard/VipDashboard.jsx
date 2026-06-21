@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import "./VipDashboard.css";
 import { useUser } from "../contexts/UserContext";
 import api from "../utils/axiosInstance"; // ✅ USE CENTRALIZED API
+import AppLoader from "../components/AppLoader";
 
 export default function VipDashboard() {
   const { user } = useUser();
@@ -65,7 +66,7 @@ export default function VipDashboard() {
     fetchVipData();
   }, []);
 
-  if (loading) return <div>Loading VIP status...</div>;
+  if (loading) return <AppLoader label="Loading VIP status..." compact />;
 
   return (
     <motion.div

@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaArrowDown, FaArrowUp, FaWallet } from "react-icons/fa";
 import api from "../utils/axiosInstance.js";
 import "./Wallet.css";
+import AppLoader from "../components/AppLoader";
 
 const Wallet = () => {
   const [balance, setBalance] = useState(0);
@@ -25,44 +27,54 @@ const Wallet = () => {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [token]);
 
-  if (loading) return <div className="wallet-container">Loading...</div>;
+  if (loading) return <AppLoader label="Loading wallet..." compact />;
 
   return (
-    <div className="wallet-container">
-      <h2>My Wallet</h2>
-      {error && <p className="error">{error}</p>}
-
-      <div className="wallet-balance-card">
-        <p>Total Balance</p>
-        <h1>${(balance ?? 0).toFixed(2)}</h1>
-      </div>
-
-      <div className="wallet-actions">
-        {/* Deposit */}
-        <div className="wallet-card">
-          <h3>Deposit Funds</h3>
-          <button
-            onClick={() => navigate("/wallet/deposit")}
-            className="deposit-btn"
-          >
-            Go to Deposit Page
-          </button>
+    <section className="wallet-container" aria-labelledby="wallet-title">
+      <header className="wallet-hero-card">
+        <span className="wallet-hero-icon" aria-hidden="true">
+          <FaWallet />
+        </span>
+        <div>
+          <p className="wallet-kicker">Available Balance</p>
+          <h1 id="wallet-title">${(balance ?? 0).toFixed(2)}</h1>
         </div>
+      </header>
 
-        {/* Withdraw (route to the new flow) */}
-        <div className="wallet-card">
-          <h3>Withdraw Funds</h3>
-          <button
-            onClick={() => navigate("/wallet/withdraw")}
-            className="withdraw-btn"
-          >
-            Go to Withdraw Page
-          </button>
-        </div>
+      {error && <p className="wallet-error">{error}</p>}
+
+      <div className="wallet-actions" aria-label="Wallet actions">
+        <button
+          type="button"
+          className="wallet-action-card deposit-action"
+          onClick={() => navigate("/wallet/deposit")}
+        >
+          <span className="wallet-action-icon" aria-hidden="true">
+            <FaArrowDown />
+          </span>
+          <span>
+            <strong>Deposit</strong>
+            <small>Add funds</small>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          className="wallet-action-card withdraw-action"
+          onClick={() => navigate("/wallet/withdraw")}
+        >
+          <span className="wallet-action-icon" aria-hidden="true">
+            <FaArrowUp />
+          </span>
+          <span>
+            <strong>Withdraw</strong>
+            <small>Cash out</small>
+          </span>
+        </button>
       </div>
-    </div>
+    </section>
   );
 };
 

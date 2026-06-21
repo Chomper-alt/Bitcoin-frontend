@@ -1,46 +1,61 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "../utils/axiosInstance.js";
+import api from "../utils/axiosInstance.js";
 import { toast } from "react-toastify";
 
-const API_URL = "http://api.metaxtrader.com/api/users/settings";
-
 const ResetPassword = () => {
-  const { token } = useParams(); // get token from URL
+  const { token } = useParams();
   const navigate = useNavigate();
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
-    if (newPassword !== confirmPassword) {
-      return toast.error("❌ Passwords do not match");
+    if (loading) return;
+
+    if (!token) {
+      toast.error("Missing reset token.");
+      return;
     }
 
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await axios.post(`${API_URL}/password-reset/${token}`, {
-        newPassword,
+      await api.post(`/api/auth/reset-password/${token}`, {
+        password: newPassword,
       });
-      toast.success("✅ Password reset successful! Please login.");
+
+      toast.success("Password reset successful. Please login.");
       navigate("/login");
     } catch (err) {
       console.error("Reset password error:", err);
-      toast.error(err.response?.data?.msg || "❌ Failed to reset password");
+      toast.error(err?.response?.data?.message || "Failed to reset password");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="reset-password-page">
-      <h2>Reset Password</h2>
-      <form onSubmit={handleResetPassword}>
+    <div className="reset-password-page auth-container">
+      <form className="auth-form" onSubmit={handleResetPassword}>
+        <h2>Reset Password</h2>
+
         <label>New Password</label>
         <input
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
+          autoComplete="new-password"
           required
+          disabled={loading}
         />
 
         <label>Confirm Password</label>
@@ -48,10 +63,14 @@ const ResetPassword = () => {
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          autoComplete="new-password"
           required
+          disabled={loading}
         />
 
-        <button type="submit">Reset Password</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Resetting..." : "Reset Password"}
+        </button>
       </form>
     </div>
   );

@@ -1,5 +1,5 @@
 // auth.js
-import api from "../api/axios"; // ✅ USE YOUR CONFIGURED INSTANCE
+import api from "../utils/axiosInstance.js";
 import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
