@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Meta X Broker</string>
-    <string name="title_activity_main">Meta X Broker</string>
+    <string name="app_name">MetaTrader X</string>
+    <string name="title_activity_main">MetaTrader X</string>
     <string name="package_name">com.metaxbroker.app</string>
     <string name="custom_url_scheme">com.metaxbroker.app</string>
 </resources>
