@@ -626,3 +626,36 @@
     border-radius: 18px;
   }
 }
+
+
+/* Live Trading chart stretch fix: override global mobile iframe rule */
+.live-terminal-v2 .live-chart-card > iframe.chart-frame,
+.live-terminal-v2 .live-chart-card .chart-frame {
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
+  display: block !important;
+}
+
+@media (max-width: 768px) {
+  body.cap-native .live-terminal-v2 .live-chart-card,
+  body.cap-mobile .live-terminal-v2 .live-chart-card {
+    height: clamp(500px, 64vh, 620px);
+    min-height: 500px;
+    max-height: 620px;
+    padding: 0;
+    margin-bottom: 10px;
+    line-height: 0;
+  }
+
+  body.cap-native .live-terminal-v2 .live-chart-card > iframe.chart-frame,
+  body.cap-mobile .live-terminal-v2 .live-chart-card > iframe.chart-frame,
+  body.cap-native .live-terminal-v2 .live-chart-card .chart-frame,
+  body.cap-mobile .live-terminal-v2 .live-chart-card .chart-frame {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    border: 0 !important;
+  }
+}

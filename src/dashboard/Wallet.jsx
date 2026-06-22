@@ -34,46 +34,42 @@ const Wallet = () => {
   return (
     <section className="wallet-container" aria-labelledby="wallet-title">
       <header className="wallet-hero-card">
-        <span className="wallet-hero-icon" aria-hidden="true">
-          <FaWallet />
-        </span>
-        <div>
-          <p className="wallet-kicker">Available Balance</p>
-          <h1 id="wallet-title">${(balance ?? 0).toFixed(2)}</h1>
+        <div className="wallet-balance-row">
+          <span className="wallet-hero-icon" aria-hidden="true">
+            <FaWallet />
+          </span>
+          <div className="wallet-balance-copy">
+            <p className="wallet-kicker">Available Balance</p>
+            <h1 id="wallet-title">${(balance ?? 0).toFixed(2)}</h1>
+          </div>
+        </div>
+
+        {error && <p className="wallet-error">{error}</p>}
+
+        <div className="wallet-actions" aria-label="Wallet actions">
+          <button
+            type="button"
+            className="wallet-action-pill deposit-action"
+            onClick={() => navigate("/wallet/deposit")}
+          >
+            <span className="wallet-action-icon" aria-hidden="true">
+              <FaArrowDown />
+            </span>
+            <span>Deposit</span>
+          </button>
+
+          <button
+            type="button"
+            className="wallet-action-pill withdraw-action"
+            onClick={() => navigate("/wallet/withdraw")}
+          >
+            <span className="wallet-action-icon" aria-hidden="true">
+              <FaArrowUp />
+            </span>
+            <span>Withdraw</span>
+          </button>
         </div>
       </header>
-
-      {error && <p className="wallet-error">{error}</p>}
-
-      <div className="wallet-actions" aria-label="Wallet actions">
-        <button
-          type="button"
-          className="wallet-action-card deposit-action"
-          onClick={() => navigate("/wallet/deposit")}
-        >
-          <span className="wallet-action-icon" aria-hidden="true">
-            <FaArrowDown />
-          </span>
-          <span>
-            <strong>Deposit</strong>
-            <small>Add funds</small>
-          </span>
-        </button>
-
-        <button
-          type="button"
-          className="wallet-action-card withdraw-action"
-          onClick={() => navigate("/wallet/withdraw")}
-        >
-          <span className="wallet-action-icon" aria-hidden="true">
-            <FaArrowUp />
-          </span>
-          <span>
-            <strong>Withdraw</strong>
-            <small>Cash out</small>
-          </span>
-        </button>
-      </div>
     </section>
   );
 };

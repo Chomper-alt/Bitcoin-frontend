@@ -1,4 +1,21 @@
 /* Meta X Broker — Demo Trading Simulator V2 */
+/* Demo Trading follows the global html[data-theme] theme system. */
+:root[data-theme="light"] .demo-trade.demo-terminal-v2 {
+  --demo-surface: rgba(255, 255, 255, 0.88);
+  --demo-surface-strong: rgba(255, 255, 255, 0.96);
+  --demo-border: rgba(13, 148, 136, 0.22);
+  --demo-shadow: rgba(15, 118, 110, 0.14);
+  --text-primary: #082f36;
+  --text-secondary: #4b6470;
+}
+
+:root[data-theme="dark"] .demo-trade.demo-terminal-v2 {
+  --demo-surface: rgba(7, 17, 29, 0.92);
+  --demo-surface-strong: rgba(3, 18, 32, 0.96);
+  --demo-border: rgba(0, 212, 255, 0.18);
+  --demo-shadow: rgba(0, 0, 0, 0.28);
+}
+
 .demo-trade.demo-terminal-v2 {
   width: min(960px, 100%);
   margin: 0 auto;
@@ -21,24 +38,25 @@
 .open-trade-card,
 .performance-card,
 .history {
-  border: 1px solid var(--border-color, rgba(0, 212, 255, 0.18));
+  border: 1px solid var(--demo-border, var(--border-color, rgba(0, 212, 255, 0.18)));
   background:
     linear-gradient(145deg, rgba(3, 18, 32, 0.90), rgba(5, 30, 42, 0.78)),
     var(--card-bg, rgba(7, 17, 29, 0.92));
   border-radius: 20px;
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 16px 34px var(--demo-shadow, rgba(0, 0, 0, 0.22));
 }
 
-body.light .demo-account-card,
-body.light .demo-pair-card,
-body.light .demo-chart-card,
-body.light .demo-ticket-card,
-body.light .indicator-pill-row,
-body.light .open-trade-card,
-body.light .performance-card,
-body.light .history {
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 16px 34px rgba(13, 148, 136, 0.12);
+:root[data-theme="light"] .demo-account-card,
+:root[data-theme="light"] .demo-pair-card,
+:root[data-theme="light"] .demo-chart-card,
+:root[data-theme="light"] .demo-ticket-card,
+:root[data-theme="light"] .indicator-pill-row,
+:root[data-theme="light"] .open-trade-card,
+:root[data-theme="light"] .performance-card,
+:root[data-theme="light"] .history {
+  background: var(--demo-surface, rgba(255, 255, 255, 0.88));
+  border-color: var(--demo-border, rgba(13, 148, 136, 0.22));
+  box-shadow: 0 16px 34px var(--demo-shadow, rgba(13, 148, 136, 0.12));
 }
 
 .demo-account-card {
@@ -590,8 +608,9 @@ body.light .history {
   animation: demoHistoryUp 180ms ease-out;
 }
 
-body.light .history-modal {
-  background: rgba(255, 255, 255, 0.96);
+:root[data-theme="light"] .history-modal {
+  background: var(--demo-surface-strong, rgba(255, 255, 255, 0.96));
+  border-color: var(--demo-border, rgba(13, 148, 136, 0.22));
   box-shadow: 0 -22px 50px rgba(13, 148, 136, 0.18);
 }
 
@@ -651,7 +670,7 @@ body.light .history-modal {
   background: color-mix(in srgb, var(--card-bg, #07111d) 78%, transparent);
 }
 
-body.light .history-modal .history-card {
+:root[data-theme="light"] .history-modal .history-card {
   background: rgba(255, 255, 255, 0.72);
 }
 

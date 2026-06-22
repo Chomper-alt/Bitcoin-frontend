@@ -229,6 +229,135 @@
   cursor: not-allowed;
 }
 
+
+.review-download-card {
+  margin: 22px auto 0;
+  padding: 22px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--card-bg-strong) 92%, var(--accent) 8%), var(--card-bg));
+  border: 1px solid var(--border-color);
+  box-shadow: 0 18px 42px var(--shadow-color);
+  color: var(--text-primary);
+  overflow: hidden;
+  position: relative;
+}
+
+.review-download-card::before {
+  content: "";
+  position: absolute;
+  inset: -40% -20% auto auto;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 28%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+.review-download-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.review-download-logo {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  border-radius: 22px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--card-bg) 82%, var(--accent) 18%);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.review-download-kicker {
+  margin: 0 0 4px;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.review-download-card h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.6rem, 4vw, 2.15rem);
+  color: var(--text-primary);
+}
+
+.review-download-card p {
+  margin: 0;
+  max-width: 680px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.review-download-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.review-download-features span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 13px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card-bg) 74%, var(--accent) 8%);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.review-download-features svg {
+  color: var(--accent);
+}
+
+.review-download-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.review-download-btn {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.review-download-btn:hover {
+  transform: translateY(-2px);
+}
+
+.review-download-btn.primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.review-download-btn.secondary {
+  color: var(--text-primary);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
 @media (max-width: 768px) {
   .reviews-page {
     max-width: 100%;
@@ -290,4 +419,40 @@
   .pagination {
     flex-wrap: wrap;
   }
+
+  .review-download-card {
+    padding: 18px;
+    border-radius: 22px;
+    margin-top: 18px;
+  }
+
+  .review-download-brand {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .review-download-logo {
+    width: 86px;
+    height: 86px;
+  }
+
+  .review-download-features {
+    justify-content: center;
+  }
+
+  .review-download-features span {
+    flex: 1 1 calc(50% - 10px);
+    justify-content: center;
+    min-width: 130px;
+  }
+
+  .review-download-actions {
+    flex-direction: column;
+  }
+
+  .review-download-btn {
+    width: 100%;
+  }
+
 }
