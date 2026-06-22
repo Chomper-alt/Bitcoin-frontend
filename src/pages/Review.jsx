@@ -51,24 +51,26 @@ export default function Reviews() {
     <div className="reviews-page">
       <h1>What our users say</h1>
 
-      <div className="overall-wrap">
-        <div className="overall-card">
-          <div className="avg-block">
-            <div className="avg-number">{overall.rating}</div>
-            <div className="avg-stars"><Stars value={Math.round(overall.rating)} /></div>
-            <div className="avg-votes">{overall.votes} reviews</div>
-          </div>
+      <div className="review-top-grid">
+        <div className="overall-wrap">
+          <div className="overall-card">
+            <div className="avg-block">
+              <div className="avg-number">{overall.rating}</div>
+              <div className="avg-stars"><Stars value={Math.round(overall.rating)} /></div>
+              <div className="avg-votes">{overall.votes} reviews</div>
+            </div>
 
-          <div className="distribution">
-            {Object.entries(overall.distribution).sort((a,b)=>b[0]-a[0]).map(([star, pct]) => (
-              <div key={star} className="dist-row">
-                <div className="star-label">{star} <span className="small-star">★</span></div>
-                <div className="bar">
-                  <div className="bar-fill" style={{ width: `${pct}%` }} />
+            <div className="distribution">
+              {Object.entries(overall.distribution).sort((a,b)=>b[0]-a[0]).map(([star, pct]) => (
+                <div key={star} className="dist-row">
+                  <div className="star-label">{star} <span className="small-star">★</span></div>
+                  <div className="bar">
+                    <div className="bar-fill" style={{ width: `${pct}%` }} />
+                  </div>
+                  <div className="pct">{pct}%</div>
                 </div>
-                <div className="pct">{pct}%</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
