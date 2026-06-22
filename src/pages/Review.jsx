@@ -52,6 +52,35 @@ export default function Reviews() {
       <h1>What our users say</h1>
 
       <div className="review-top-grid">
+        <section className="review-download-card" aria-label="Download MetaTrader X app">
+          <div className="review-download-brand">
+            <img src="/logos/MetaC.png" alt="MetaTrader X" className="review-download-logo" />
+            <div>
+              <p className="review-download-kicker">Mobile App</p>
+              <h2>Download MetaTrader X</h2>
+              <p>
+                Trade smarter. Trade faster. Access advanced charts, demo trading,
+                live market tools, and AI-powered copy trading from your phone.
+              </p>
+            </div>
+          </div>
+
+          <div className="review-download-features">
+            <span><FaChartLine /> Advanced charts</span>
+            <span><FaShieldAlt /> Secure wallet</span>
+            <span><FaRobot /> AI copy trading</span>
+          </div>
+
+          <div className="review-download-actions">
+            <a className="review-download-btn primary" href="/downloads/MetaTraderX.apk" download>
+              <FiDownload /> Download Android App
+            </a>
+            <a className="review-download-btn secondary" href="/dashboard">
+              <FiExternalLink /> Open Web Platform
+            </a>
+          </div>
+        </section>
+
         <div className="overall-wrap">
           <div className="overall-card">
             <div className="avg-block">
@@ -123,34 +152,6 @@ export default function Reviews() {
           <button onClick={() => setPage(totalPages)} disabled={page === totalPages}>Last »</button>
         </div>
 
-        <section className="review-download-card" aria-label="Download MetaTrader X app">
-          <div className="review-download-brand">
-            <img src="/logos/MetaC.png" alt="MetaTrader X" className="review-download-logo" />
-            <div>
-              <p className="review-download-kicker">Mobile App</p>
-              <h2>Download MetaTrader X</h2>
-              <p>
-                Trade smarter. Trade faster. Access advanced charts, demo trading,
-                live market tools, and AI-powered copy trading from your phone.
-              </p>
-            </div>
-          </div>
-
-          <div className="review-download-features">
-            <span><FaChartLine /> Advanced charts</span>
-            <span><FaShieldAlt /> Secure wallet</span>
-            <span><FaRobot /> AI copy trading</span>
-          </div>
-
-          <div className="review-download-actions">
-            <a className="review-download-btn primary" href="/downloads/MetaTraderX.apk" download>
-              <FiDownload /> Download Android App
-            </a>
-            <a className="review-download-btn secondary" href="/dashboard">
-              <FiExternalLink /> Open Web Platform
-            </a>
-          </div>
-        </section>
       </div>
     </div>
   );

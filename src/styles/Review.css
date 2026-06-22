@@ -16,10 +16,11 @@
 
 .review-top-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 1.08fr);
-  gap: 20px;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(420px, 1.1fr);
+  gap: 22px;
   align-items: stretch;
-  margin-bottom: 30px;
+  margin: 8px auto 30px;
+  max-width: 1100px;
 }
 
 .review-top-grid .overall-wrap {
@@ -27,13 +28,15 @@
   height: 100%;
 }
 
-.review-top-grid .overall-card,
-.review-top-grid .review-download-card {
-  height: 100%;
-}
-
 .review-top-grid .overall-card {
   width: 100%;
+  height: 100%;
+  min-height: 214px;
+}
+
+.review-top-grid .review-download-card {
+  margin: 0;
+  height: 100%;
 }
 
 .overall-wrap {
@@ -253,7 +256,7 @@
 
 
 .review-download-card {
-  margin: 0 auto;
+  margin: 22px auto 0;
   padding: 22px;
   border-radius: 24px;
   background: linear-gradient(135deg, color-mix(in srgb, var(--card-bg-strong) 92%, var(--accent) 8%), var(--card-bg));
@@ -381,21 +384,6 @@
 }
 
 @media (max-width: 768px) {
-  .review-top-grid {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 18px;
-  }
-
-  .review-top-grid .review-download-card {
-    order: -1;
-  }
-
-  .review-top-grid .overall-card,
-  .review-top-grid .review-download-card {
-    height: auto;
-  }
-
   .reviews-page {
     max-width: 100%;
     margin: 0 auto;
@@ -405,6 +393,20 @@
   .reviews-page h1 {
     font-size: clamp(1.7rem, 8vw, 2.2rem);
     margin-bottom: 18px;
+  }
+
+  .review-top-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin: 0 0 24px;
+  }
+
+  .review-top-grid .review-download-card {
+    order: -1;
+  }
+
+  .review-top-grid .overall-card {
+    min-height: 0;
   }
 
   .overall-card {
@@ -460,7 +462,7 @@
   .review-download-card {
     padding: 18px;
     border-radius: 22px;
-    margin-top: 0;
+    margin-top: 18px;
   }
 
   .review-download-brand {
@@ -492,4 +494,14 @@
     width: 100%;
   }
 
+}
+
+@media (min-width: 769px) {
+  .review-top-grid .overall-wrap {
+    order: 1;
+  }
+
+  .review-top-grid .review-download-card {
+    order: 2;
+  }
 }
