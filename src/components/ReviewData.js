@@ -2,7 +2,7 @@
 export const reviewsData = [
 
 
-  { name: "Aisha Khan", avatar: "https://randomuser.me/api/portraits/women/68.jpg", registered: "2023-11-08", earned: 324580, rating: 5, comment: "MetaXTrader has become my go-to platform. Deposits are smooth and trades execute fast. Support helped me once with a minor issue and were professional." },
+  { name: "Aisha Khan", avatar: "https://randomuser.me/api/portraits/women/68.jpg", registered: "2023-11-08", earned: 324580, rating: 5, comment: "MetaTrader X has become my go-to platform. Deposits are smooth and trades execute fast. Support helped me once with a minor issue and were professional." },
   { name: "Carlos Mendez", avatar: "https://randomuser.me/api/portraits/men/45.jpg", registered: "2024-03-15", earned: 552840, rating: 5, comment: "Great UX and clean charts. I switched from another broker and the difference is night and day — withdrawals were processed quickly." },
   { name: "Sofia Rossi", avatar: "https://randomuser.me/api/portraits/women/22.jpg", registered: "2024-07-02", earned: 210000, rating: 5, comment: "Love the copy trading feature — simple to set up, and the signals performed as advertised during the trial period." },
   { name: "James Thompson", avatar: "https://randomuser.me/api/portraits/men/33.jpg", registered: "2023-10-21", earned: 184200, rating: 5, comment: "Solid platform. Mobile app works perfectly and the desktop view is great for deeper analysis. Fees are fair." },
