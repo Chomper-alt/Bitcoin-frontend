@@ -505,3 +505,57 @@
     order: 2;
   }
 }
+
+.review-download-logo-shell {
+  width: 92px;
+  height: 92px;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--card-bg) 82%, var(--accent) 18%);
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.review-download-logo-shell .review-download-logo {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.review-download-platform-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--accent);
+}
+
+.review-download-card.web-platform-card .review-download-actions .review-download-btn,
+.review-download-card.mobile-download-card .review-download-actions .review-download-btn {
+  min-width: 240px;
+}
+
+@media (max-width: 768px) {
+  .review-download-logo-shell {
+    width: 86px;
+    height: 86px;
+  }
+
+  .review-download-platform-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .review-download-card.web-platform-card .review-download-actions .review-download-btn,
+  .review-download-card.mobile-download-card .review-download-actions .review-download-btn {
+    min-width: 0;
+  }
+}
+
+.review-download-logo-shell .review-download-logo {
+  padding: 0;
+  object-fit: contain;
+}

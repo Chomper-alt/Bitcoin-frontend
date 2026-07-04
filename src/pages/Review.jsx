@@ -1,6 +1,6 @@
 // src/components/Reviews.jsx
 import React, { useState, useMemo } from "react";
-import { FiDownload, FiExternalLink } from "react-icons/fi";
+import { FiDownload, FiExternalLink, FiGlobe } from "react-icons/fi";
 import { FaChartLine, FaRobot, FaShieldAlt } from "react-icons/fa";
 import { reviewsData, overallRating as presetRating } from "../components/ReviewData";
 import "../styles/Review.css";
@@ -25,6 +25,20 @@ function Stars({ value }) {
 export default function Reviews() {
   const [page, setPage] = useState(1);
   const [expanded, setExpanded] = useState({}); // track expanded comments
+
+  const isNativeApp = useMemo(() => {
+    if (typeof window === "undefined") return false;
+
+    const capacitor = window.Capacitor;
+    if (capacitor?.isNativePlatform?.()) return true;
+
+    const platform = capacitor?.getPlatform?.();
+    return (
+      window.location.protocol === "capacitor:" ||
+      platform === "android" ||
+      platform === "ios"
+    );
+  }, []);
 
   const total = reviewsData.length;
   const totalPages = Math.ceil(total / PER_PAGE);
@@ -52,15 +66,26 @@ export default function Reviews() {
       <h1>What our users say</h1>
 
       <div className="review-top-grid">
-        <section className="review-download-card" aria-label="Download MetaTrader X app">
+        <section
+          className={`review-download-card ${isNativeApp ? "web-platform-card" : "mobile-download-card"}`}
+          aria-label={isNativeApp ? "Open MetaTrader X web platform" : "Download MetaTrader X app"}
+        >
           <div className="review-download-brand">
-            <img src="/logos/MetaC.png" alt="MetaTrader X" className="review-download-logo" />
+            <div className="review-download-logo-shell">
+              {isNativeApp ? (
+                <FiGlobe className="review-download-platform-icon" aria-hidden="true" />
+              ) : (
+                <img src="/logos/MetaC.png" alt="MetaTrader X" className="review-download-logo" />
+              )}
+            </div>
+
             <div>
-              <p className="review-download-kicker">Mobile App</p>
-              <h2>Download MetaTrader X</h2>
+              <p className="review-download-kicker">{isNativeApp ? "Web Platform" : "Mobile App"}</p>
+              <h2>{isNativeApp ? "Open Web Platform" : "Download MetaTrader X"}</h2>
               <p>
-                Trade smarter. Trade faster. Access advanced charts, demo trading,
-                live market tools, and AI-powered copy trading from your phone.
+                {isNativeApp
+                  ? "Access the full MetaTrader X web platform in your browser. Manage your account, review activity, and continue trading from the web."
+                  : "Trade smarter. Trade faster. Access advanced charts, demo trading, live market tools, and AI-powered copy trading from your phone."}
               </p>
             </div>
           </div>
@@ -72,12 +97,20 @@ export default function Reviews() {
           </div>
 
           <div className="review-download-actions">
-            <a className="review-download-btn primary" href="/downloads/MetaTraderX.apk" download>
-              <FiDownload /> Download Android App
-            </a>
-            <a className="review-download-btn secondary" href="/dashboard">
-              <FiExternalLink /> Open Web Platform
-            </a>
+            {isNativeApp ? (
+              <a
+                className="review-download-btn primary"
+                href="https://metaxtrader.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FiExternalLink /> Open Web Platform
+              </a>
+            ) : (
+              <a className="review-download-btn primary" href="/downloads/MetaTraderX.apk" download>
+                <FiDownload /> Download Android App
+              </a>
+            )}
           </div>
         </section>
 
