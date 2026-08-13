@@ -15,9 +15,9 @@ export default function Terms() {
         <section className="terms-section">
           <h2>1. Introduction</h2>
           <p>
-            Welcome to <strong>MetaX Traders</strong> (the "Platform"). These Terms &amp;
-            Conditions ("Terms") govern your access to and use of the Platform, services,
-            and content offered by MetaX Traders. By registering, accessing, or using the
+            Welcome to <strong>Meta Trader X </strong>. These Terms &amp;
+            Conditions govern your access to and use of the Platform, services,
+            and content offered by Meta Trader X. By registering, accessing, or using the
             Platform you agree to be bound by these Terms. If you do not agree, do not use
             the Platform.
           </p>
@@ -45,7 +45,7 @@ export default function Terms() {
         <section className="terms-section">
           <h2>4. Services Provided</h2>
           <p>
-            MetaX Traders provides tools for cryptocurrency wallet management, deposits and withdrawals,
+            Meta Trader X provides tools for cryptocurrency wallet management, deposits and withdrawals,
             trading and copy trading features, and account-related services. We may modify, suspend,
             or discontinue features at any time without prior notice.
           </p>
@@ -55,8 +55,7 @@ export default function Terms() {
           <h2>5. Financial &amp; Trading Risks</h2>
           <p>
             Cryptocurrency and derivatives trading involves substantial risk. Prices are volatile,
-            and you may lose your entire investment. Nothing on the Platform constitutes financial,
-            investment, tax, or legal advice. All trading decisions are made by you and at your risk.
+            and you may lose your entire investment. All live trading decisions are made by you and at your risk.
           </p>
         </section>
 
@@ -84,24 +83,17 @@ export default function Terms() {
         <section className="terms-section">
           <h2>8. Content &amp; Intellectual Property</h2>
           <p>
-            All content on the Platform — including logos, brand assets, text, and software — is protected by intellectual
-            property rights and owned by MetaX Traders or our licensors. You may not copy, reproduce, or redistribute content
+            All content on the Platform including logos, brand assets, text, and software is protected by intellectual
+            property rights and owned by Meta Trader X or our licensors. You may not copy, reproduce, or redistribute content
             without our prior written permission.
           </p>
         </section>
 
-        <section className="terms-section">
-          <h2>9. Privacy</h2>
-          <p>
-            Your use of the Platform is also governed by our Privacy Policy. By using the Platform you consent to the collection
-            and processing of your personal data as described in that policy.
-          </p>
-        </section>
 
         <section className="terms-section">
-          <h2>10. Limitations of Liability</h2>
+          <h2>9. Limitations of Liability</h2>
           <p>
-            To the fullest extent permitted by law, MetaX Traders and its affiliates will not be liable for any indirect,
+            To the fullest extent permitted by law, Meta Trader X and its affiliates will not be liable for any indirect,
             incidental, special or consequential damages, or loss of profits, revenue, data, or use. Our total aggregate liability
             to you for any claim arising from these Terms will not exceed amounts you have paid to us in the prior 12 months, or
             USD $100, whichever is greater.
@@ -109,7 +101,7 @@ export default function Terms() {
         </section>
 
         <section className="terms-section">
-          <h2>11. Suspension &amp; Termination</h2>
+          <h2>10. Suspension &amp; Termination</h2>
           <p>
             We may suspend or terminate your access if you breach these Terms or engage in activity that threatens the Platform or
             other users. We will notify you where appropriate and permitted.
@@ -119,8 +111,8 @@ export default function Terms() {
         <section className="terms-section">
           <h2>12. Governing Law &amp; Dispute Resolution</h2>
           <p>
-            These Terms are governed by the laws of [Your Jurisdiction]. Any dispute arising from or related to these Terms shall
-            be resolved in the courts located in [Your Jurisdiction], unless otherwise agreed in writing.
+            These Terms are governed by the laws of England and Wales. Any dispute arising from or related to these Terms shall
+            be resolved in the courts located in England and Wales, unless otherwise agreed in writing.
           </p>
         </section>
 
@@ -141,7 +133,7 @@ export default function Terms() {
         </section>
 
         <footer className="terms-footer">
-          <small>© {new Date().getFullYear()} MetaX Traders. All rights reserved.</small>
+          <small>© {new Date().getFullYear()} Meta Trader X. All rights reserved.</small>
         </footer>
       </div>
     </div>
